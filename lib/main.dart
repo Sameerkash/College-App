@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kssem/Notifiers/profile_notifier.dart';
 import 'package:kssem/Notifiers/search_notifier.dart';
-import 'package:kssem/Notifiers/theme_changer.dart';
+// import 'package:kssem/Notifiers/theme_changer.dart';
 import 'package:kssem/Notifiers/timeline_notifier.dart';
 import 'package:kssem/Services/authentication.dart';
 import 'package:kssem/Services/database.dart';
@@ -19,36 +19,39 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-      // Provider<AuthBase>(
-      //   create: (context) => Auth(),
-      // ),
-      // Provider<LandingPage>(
-      //   create: (context) => LandingPage(),
-      // ),
-      ChangeNotifierProvider<UserProvider>(
-        create: (_) => UserProvider.initialize(),
-      ),
-      // Provider<Database>(create: (_) => FirestoreDatabase()),
-      ProxyProvider<UserProvider, Database>(
-        update: (_, auth, __) =>
-            FirestoreDatabase(uid: auth.uid, user: auth.user),
-      ),
-      ChangeNotifierProvider<TimelineNotifer>(
-        create: (context) => TimelineNotifer(),
-      ),
-      ChangeNotifierProvider<ProfileNotifier>(
-        create: (context) => ProfileNotifier(),
-      ),
-      ChangeNotifierProvider<SearchNotifier>(
-        create: (context) => SearchNotifier(),
-      )
-      // ChangeNotifierProvider<ThemeChanger>(
-      //   create: (_) => ThemeChanger(
-      //     ThemeData.dark(),
-      //   ),
-      // )
-    ], child: MatApp());
+    return MultiProvider(
+      providers: [
+        // Provider<AuthBase>(
+        //   create: (context) => Auth(),
+        // ),
+        // Provider<LandingPage>(
+        //   create: (context) => LandingPage(),
+        // ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => UserProvider.initialize(),
+        ),
+        // Provider<Database>(create: (_) => FirestoreDatabase()),
+        ProxyProvider<UserProvider, Database>(
+          update: (_, auth, __) =>
+              FirestoreDatabase(uid: auth.uid, user: auth.user),
+        ),
+        ChangeNotifierProvider<TimelineNotifer>(
+          create: (context) => TimelineNotifer(),
+        ),
+        ChangeNotifierProvider<ProfileNotifier>(
+          create: (context) => ProfileNotifier(),
+        ),
+        ChangeNotifierProvider<SearchNotifier>(
+          create: (context) => SearchNotifier(),
+        )
+        // ChangeNotifierProvider<ThemeChanger>(
+        //   create: (_) => ThemeChanger(
+        //     ThemeData.dark(),
+        //   ),
+        // )
+      ],
+      child: MatApp(),
+    );
   }
 }
 

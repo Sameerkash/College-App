@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:shape_of_view/generated/i18n.dart';
 
 class Users {
   final String uid;

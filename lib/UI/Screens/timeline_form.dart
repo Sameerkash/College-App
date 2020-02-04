@@ -170,7 +170,7 @@ class _TimelineFormState extends State<TimelineForm>
           exception: e,
         ).show(context);
       }
-      {}
+      
     }
   }
 }
