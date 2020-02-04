@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../Models/post.dart';
-import '../Models/student.dart';
+import '../Models/faculty.dart';
 import '../Models/users.dart';
 import '../Notifiers/profile_notifier.dart';
 import '../Notifiers/search_notifier.dart';
@@ -12,12 +12,12 @@ import '../Services/firestore_service.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class Database {
-  Future<void> setStudent(Student student);
-  getStudent();
+  Future<void> setFaculty(Faculty faculty);
+  getFaculty();
   Future<void> setPost(Post post, bool isUpdating);
   // Future<void> setTimeline(Post post, bool isUpdating);
   getPosts(ProfileNotifier post);
-  getStudentProfile(ProfileNotifier student);
+  getFacultyProfile(ProfileNotifier faculty);
   getTimeline(TimelineNotifer timelinePosts);
   getMoreTimeline(TimelineNotifer timelinePosts);
   getMoreProfilePosts(ProfileNotifier posts);
@@ -58,9 +58,9 @@ class FirestoreDatabase implements Database {
   // }
 
   @override
-  Future<void> setStudent(Student student) async => await _service.setData(
-        path: 'students/$uid/',
-        data: student.toMap(),
+  Future<void> setFaculty(Faculty faculty) async => await _service.setData(
+        path: 'faculty/$uid/',
+        data: faculty.toMap(),
       );
 
   DocumentSnapshot lastPostDocument;
@@ -133,20 +133,20 @@ class FirestoreDatabase implements Database {
     gettingPostsList = false;
   }
 
-  Future<Student> getStudent() async {
+  Future<Faculty> getFaculty() async {
     final reference = Firestore.instance;
     final refresult =
-        await reference.collection('students').document('$uid').get();
+        await reference.collection('faculty').document('$uid').get();
 
-    return Student.fromMap(refresult.data, uid);
+    return Faculty.fromMap(refresult.data, uid);
   }
 
-  getStudentProfile(ProfileNotifier student) async {
+  getFacultyProfile(ProfileNotifier faculty) async {
     final reference = Firestore.instance;
     final document =
-        await reference.collection('students').document('$uid').get();
-    Student _student = Student.fromMap(document.data, uid);
-    student.setStudentProfile = _student;
+        await reference.collection('faculty').document('$uid').get();
+    Faculty _faculty = Faculty.fromMap(document.data, uid);
+    faculty.setStudentProfile = _faculty;
   }
 
   Future<void> setPost(Post post, bool isUpdating) async {

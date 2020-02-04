@@ -1,56 +1,56 @@
 import 'package:flutter/foundation.dart';
 
-class Student {
+class Faculty {
   final String uid;
   final String name;
   final String displayName;
-  final String usn;
+  final String facultyId;
   final String email;
   final String phone;
-  final String branch;
-  final String degree;
+  final String department;
+  final String designation;
   String photoUrl;
   dynamic links;
   dynamic posts;
 
-  Student({
+  Faculty({
     @required this.uid,
-    this.usn,
+    this.facultyId,
     /*@required*/ this.name,
     this.displayName,
     /*@required*/ this.email,
     /*@required*/ this.phone,
-    /*@required*/ this.branch,
-    /*@required*/ this.degree,
+    /*@required*/ this.department,
+    /*@required*/ this.designation,
     this.photoUrl,
     this.links,
     this.posts,
   });
 
-  factory Student.fromMap(Map<String, dynamic> data, String id) {
+  factory Faculty.fromMap(Map<String, dynamic> data, String id) {
     if (data == null) {
       return null;
     }
     final String name = data['name'];
     final String displayName = data['displayName'];
-    final String usn = data['usn'];
+    final String facultyId = data['facultyId'];
     final String email = data['email'];
     final String phone = data['phone'];
-    final String branch = data['branch'];
-    final String degree = data['degree'];
+    final String department = data['department'];
+    final String designation = data['designation'];
     final String photoUrl = data['photoUrl'];
     dynamic links = data['links'];
     dynamic posts = data['pots'];
-    return Student(
+    return Faculty(
       uid: id,
-      usn: usn,
+      facultyId: facultyId,
       name: name,
       displayName: displayName,
       phone: phone,
       email: email,
-      branch: branch,
+      department: department,
       photoUrl: photoUrl,
-      degree: degree,
+      designation: designation,
       links: links,
       posts: posts,
     );
@@ -59,13 +59,13 @@ class Student {
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'usn': usn ?? '',
+      'facultyId': facultyId ?? '',
       'name': name ?? '',
       'displayName': displayName ?? '',
       'phone': phone ?? '',
       'email': email ?? '',
-      'branch': branch ?? '',
-      'degree': degree ?? '',
+      'department': department ?? '',
+      'designation': designation ?? '',
       'photoUrl': photoUrl ?? '',
       'links': links ?? '',
       'posts': posts ?? ''

@@ -2,19 +2,19 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:kssem/Models/post.dart';
-import 'package:kssem/Models/student.dart';
+import 'package:kssem/Models/faculty.dart';
 
 class ProfileNotifier with ChangeNotifier {
   List<Post> _post = [];
   Post _currentPost;
-  Student _student;
+  Faculty _faculty;
 
   UnmodifiableListView<Post> get posts => UnmodifiableListView(_post);
   Post get currentPost => _currentPost;
-  Student get student => _student;
+  Faculty get student => _faculty;
 
-  set setStudentProfile(Student student) {
-    _student = student;
+  set setStudentProfile(Faculty faculty) {
+    _faculty = student;
     notifyListeners();
   }
 

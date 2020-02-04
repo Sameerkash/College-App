@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../Models/student.dart';
+import '../../Models/faculty.dart';
 import '../../Services/authentication.dart';
 import '../../Services/database.dart';
 import '../Widgets/platform_alert_dialog.dart';
@@ -22,11 +22,11 @@ class ProfileForm extends StatefulWidget {
 class _ProfileFormState extends State<ProfileForm> {
   final _formKey = GlobalKey<FormState>();
   String _name;
-  String _usn;
+  String _facultyId;
   String _email;
   String _phone;
-  String _branch;
-  String _degree;
+  String _department;
+  String _designation;
 
   Future<void> _signOut(BuildContext context) async {
     try {
@@ -55,7 +55,10 @@ class _ProfileFormState extends State<ProfileForm> {
       appBar: AppBar(
         // leading: Icon(Icons.person),
         backgroundColor: Colors.black,
-        title: Text("Complete Your Profile",style: TextStyle(fontSize: 18),),
+        title: Text(
+          "Complete Your Profile",
+          style: TextStyle(fontSize: 18),
+        ),
         actions: <Widget>[
           Icon(Icons.cancel),
           FlatButton(
@@ -86,13 +89,13 @@ class _ProfileFormState extends State<ProfileForm> {
                         return "Enter Full Name";
                       }
                     }, (value) => _name = value, Icons.person),
-                    buildTextFormField("USN", (value) {
-                      if (value.startsWith("1KG")) {
+                    buildTextFormField("Faculty ID", (value) {
+                      if (value.startsWith("1KG") && value.length == 10) {
                         return null;
                       } else {
-                        return "Enter a valid USN";
+                        return "Enter a valid facultyId";
                       }
-                    }, (value) => _usn = value, Icons.confirmation_number),
+                    }, (value) => _facultyId = value, Icons.confirmation_number),
                     buildTextFormField("Phone", (value) {
                       if (value.length == 10) {
                         return null;
@@ -107,7 +110,7 @@ class _ProfileFormState extends State<ProfileForm> {
                         return "Enter valid email ";
                       }
                     }, (value) => _email = value, Icons.mail),
-                    buildTextFormField("Branch", (value) {
+                    buildTextFormField("Department(CSE,ECE,EEE,ME,CIV)", (value) {
                       // Pattern pattern = r"/[CSE\,ECE\,EEE\,ME\,CIV]/";
                       // RegExp regex = new RegExp(pattern);
 
@@ -119,17 +122,17 @@ class _ProfileFormState extends State<ProfileForm> {
                           (value.length <= 3)) {
                         return null;
                       } else {
-                        return "Enter a valid Branch ";
+                        return "Enter a valid Department";
                       }
-                    }, (value) => _branch = value,
+                    }, (value) => _department = value,
                         MaterialCommunityIcons.alphabetical),
-                    buildTextFormField("Degree", (value) {
-                      if (value.contains("B.E")) {
+                    buildTextFormField("Designation", (value) {
+                      if (value.contains("Asst.")||value.contains("Associate")) {
                         return null;
                       } else {
-                        return "Enter a valid Degree";
+                        return "Enter a valid designation";
                       }
-                    }, (value) => _degree = value,
+                    }, (value) => _designation = value,
                         MaterialCommunityIcons.google_classroom),
                     SizedBox(
                       height: 30,
@@ -236,17 +239,17 @@ class _ProfileFormState extends State<ProfileForm> {
     final db = Provider.of<Database>(context, listen: false);
     if (_validateAndSaveForm()) {
       try {
-        Student student = Student(
+        Faculty faculty = Faculty(
             uid: db.userId,
-            usn: _usn,
+            facultyId: _facultyId,
             name: _name,
             displayName: db.displayName,
-            branch: _branch,
+            department: _department,
             email: _email,
             phone: _phone,
             photoUrl: db.photoUrl,
-            degree: _degree);
-        await db.setStudent(student);
+            designation: _designation);
+        await db.setFaculty(faculty);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
           title: 'Operation failed',

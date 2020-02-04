@@ -14,7 +14,7 @@ class CheckUserExists extends StatelessWidget {
     // bool isExists = true;
 
     return FutureBuilder(
-      future: db.getStudent(),
+      future: db.getFaculty(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(

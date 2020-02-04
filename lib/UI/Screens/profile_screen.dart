@@ -32,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     ProfileNotifier posts =
         Provider.of<ProfileNotifier>(context, listen: false);
     final db = Provider.of<Database>(context, listen: false);
-    db.getStudentProfile(posts);
+    db.getFacultyProfile(posts);
     db.getPosts(posts);
 
     _scrollController.addListener(() {
@@ -181,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             RefreshIndicator(
                 color: Colors.indigo,
                 onRefresh: () {
-                  return db.getStudentProfile(posts);
+                  return db.getFacultyProfile(posts);
                 },
                 child: RefreshIndicator(
                   color: Colors.purple,
@@ -197,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         buildCard(devicesize,
                             photoUrl: posts.student.photoUrl,
                             name: posts.student.displayName ?? "name",
-                            branch: posts.student.branch),
+                            branch: posts.student.department),
                         Flexible(
                           // fit: FlexFit.loose,
 

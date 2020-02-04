@@ -24,7 +24,7 @@ class AuthScreen extends StatelessWidget {
             child: Container(
               width: _devicesize.width * 0.85,
               height: _devicesize.width * 0.85,
-              child: Image.asset("assets/kssemlogo.png"),
+              child: Image.asset('assets/kssemlogo.png'),
             ),
           ),
           Positioned(
