@@ -159,7 +159,7 @@ class _TimelineFormState extends State<TimelineForm>
           _isLoading = true;
         });
         // await db.setTimeline(post, widget.isUpdating);
-        await db.setPost(post, widget.isUpdating);
+        await db.setPost( widget.isUpdating,post:post,);
         setState(() {
           _isLoading = false;
         });

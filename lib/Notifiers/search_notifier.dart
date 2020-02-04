@@ -10,8 +10,8 @@ class SearchNotifier with ChangeNotifier {
   UnmodifiableListView<Users> get users => UnmodifiableListView(_userList);
   get querySuccessstatus => _querySuccess;
 
-  set studentsList(List<Users> students) {
-    _userList = students;
+  set usersList(List<Users> users) {
+    _userList = users;
     notifyListeners();
   }
 

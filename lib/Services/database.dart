@@ -14,8 +14,9 @@ import 'package:uuid/uuid.dart';
 abstract class Database {
   Future<void> setFaculty(Faculty faculty);
   getFaculty();
-  Future<void> setPost(Post post, bool isUpdating);
-  // Future<void> setTimeline(Post post, bool isUpdating);
+  Future<void> setPost(bool isUpdating,
+      {UpdatePost updatePost,
+      Post post}); // Future<void> setTimeline(Post post, bool isUpdating);
   getPosts(ProfileNotifier post);
   getFacultyProfile(ProfileNotifier faculty);
   getTimeline(TimelineNotifer timelinePosts);
@@ -146,20 +147,26 @@ class FirestoreDatabase implements Database {
     final document =
         await reference.collection('faculty').document('$uid').get();
     Faculty _faculty = Faculty.fromMap(document.data, uid);
-    faculty.setStudentProfile = _faculty;
+    faculty.setFacultyProfile = _faculty;
   }
 
-  Future<void> setPost(Post post, bool isUpdating) async {
+  Future<void> setPost(bool isUpdating,
+      {UpdatePost updatePost, Post post}) async {
     var uuid = Uuid().v4();
     final profileref = Firestore.instance.collection('posts/$uid/userPosts');
 
     final timelineref = Firestore.instance.collection('timeline');
 
     if (isUpdating) {
-      post.updatedAt = Timestamp.now();
+      updatePost.updatedAt = Timestamp.now();
       // print(post.postId);
-      await profileref.document(post.postId).updateData(post.toMap());
-      await timelineref.document(post.postId).updateData(post.toMap());
+      await profileref
+          .document(updatePost.postId)
+          .updateData(updatePost.toUpdateMap());
+      await timelineref
+          .document(updatePost.postId)
+          .updateData(updatePost.toUpdateMap());
+    } else {
       post.createdAt = Timestamp.now();
       post.postId = uuid;
       await profileref.document('$uuid').setData(post.toMap(), merge: true);
@@ -281,21 +288,36 @@ class FirestoreDatabase implements Database {
     await timelineref.document(post.postId).updateData({'likes.$userId': true});
   }
 
-  handleSearch(String query, SearchNotifier students) async {
-    final snapshot = await Firestore.instance
+  handleSearch(String query, SearchNotifier users) async {
+    final studentSnapshot = await Firestore.instance
         .collection('students')
         .where('displayName', isGreaterThanOrEqualTo: query)
         .getDocuments();
-    if (snapshot.documents.isEmpty) {
-      students.querySuccess = false;
+    final facultySnapShot = await Firestore.instance
+        .collection('faculty')
+        .where('displayName', isGreaterThanOrEqualTo: query)
+        .getDocuments();
+    // print(studentSnapshot.documents.length);
+    // print(facultySnapShot.documents.length);
+
+    if (studentSnapshot.documents.isEmpty &&
+        facultySnapShot.documents.isEmpty) {
+      users.querySuccess = false;
+    } else {
+      users.querySuccess = true;
     }
 
     List<Users> _usersList = [];
-    snapshot.documents.forEach((doc) {
-      Users _users = Users.fromMap(doc.data);
+    studentSnapshot.documents.forEach((doc) {
+      Users _users = Users.fromStudentMap(doc.data);
       _usersList.add(_users);
     });
-    students.studentsList = _usersList;
+    facultySnapShot.documents.forEach((doc) {
+      Users _facultyUsers = Users.fromFacultyMap(doc.data);
+      _usersList.add(_facultyUsers);
+    });
+
+    users.usersList = _usersList;
   }
 
   getUserProfilePosts(Users user) async {

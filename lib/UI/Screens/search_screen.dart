@@ -62,19 +62,23 @@ class _SearchScreenState extends State<SearchScreen> {
           //  Container(),
           ListView.builder(
               itemBuilder: (context, index) {
-                return buildListTile(
-                    searchNotifier.users[index].photoUrl,
-                    searchNotifier.users[index].displayName,
-                    searchNotifier.users[index].branch, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfile(
-                        searchNotifier.users[index],
-                      ),
-                    ),
-                  );
-                });
+                return searchNotifier.users[index].displayName == null
+                    ? Container(
+                        height: 0,
+                      )
+                    : buildListTile(
+                        searchNotifier.users[index].photoUrl,
+                        searchNotifier.users[index].displayName,
+                        searchNotifier.users[index].branch, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(
+                              searchNotifier.users[index],
+                            ),
+                          ),
+                        );
+                      });
               },
               itemCount: searchNotifier.users.length,
             ),
@@ -83,27 +87,30 @@ class _SearchScreenState extends State<SearchScreen> {
 
   buildListTile(
       String photoUrl, String displayName, String branch, Function onTap) {
-    return Column(children: [
-      ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(photoUrl),
-        ),
-        title: Text(
-          displayName,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(branch),
-        trailing: Icon(Icons.arrow_forward_ios),
-        onTap: onTap,
-      ),
-      Divider(
-        height: 2.0,
-        color: Colors.grey,
-      ),
-    ]);
+    return displayName == null
+        ? Container(height: 0)
+        : Column(children: [
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(photoUrl),
+              ),
+              title: Text(
+                displayName,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(branch),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: onTap,
+            ),
+            Divider(
+              height: 2.0,
+              color: Colors.grey,
+            ),
+          ]);
   }
 
   clearSearch() {
-    _textEditingController.clear();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _textEditingController.clear());
   }
 }

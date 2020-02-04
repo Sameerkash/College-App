@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class EditTimelineForm extends StatefulWidget {
   EditTimelineForm({this.isUpdating});
- final  bool isUpdating;
+  final bool isUpdating;
   @override
   _EditTimelineFormState createState() => _EditTimelineFormState();
 }
@@ -158,19 +158,17 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
       try {
         // String dateTime = DateTime.now().toIso8601String();
         // Timestamp timeStamp = Timestamp.now();
-        Post post = Post(
-          uid: _currentPost.uid,
-          userName: _currentPost.userName,
-          photoUrl: _currentPost.photoUrl,
+        UpdatePost updatePost = UpdatePost(
           postId: _currentPost.postId,
-          createdAt: _currentPost.createdAt,
+          // createdAt: _currentPost.createdAt,
           title: _title,
           content: _content,
         );
+        // print(_currentPost.postId);
         setState(() {
           _isLoading = true;
         });
-        await db.setPost(post, widget.isUpdating);
+        await db.setPost(widget.isUpdating, updatePost: updatePost);
         // await db.setTimeline(post, widget.isUpdating);
 
         setState(() {

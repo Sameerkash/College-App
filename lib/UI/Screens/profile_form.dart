@@ -90,7 +90,7 @@ class _ProfileFormState extends State<ProfileForm> {
                       }
                     }, (value) => _name = value, Icons.person),
                     buildTextFormField("Faculty ID", (value) {
-                      if (value.startsWith("1KG") && value.length == 10) {
+                      if ( value.length > 0) {
                         return null;
                       } else {
                         return "Enter a valid facultyId";

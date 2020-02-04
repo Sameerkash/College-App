@@ -13,8 +13,8 @@ class ProfileNotifier with ChangeNotifier {
   Post get currentPost => _currentPost;
   Faculty get student => _faculty;
 
-  set setStudentProfile(Faculty faculty) {
-    _faculty = student;
+  set setFacultyProfile(Faculty faculty) {
+    _faculty = faculty;
     notifyListeners();
   }
 

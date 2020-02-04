@@ -113,7 +113,7 @@ class _FeedScreenState extends State<FeedScreen>
             child: IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
-                searchNotifier.studentsList = [];
+                searchNotifier.usersList = [];
                 searchNotifier.querySuccess= true;
                 Navigator.push(
                   context,

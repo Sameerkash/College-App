@@ -62,7 +62,7 @@ class AuthScreen extends StatelessWidget {
                     height: _devicesize.height * 0.04,
                   ),
                   buildText(
-                    text: "Signin with Google",
+                    text: "Sign in with Google",
                     size: 20,
                     color: Colors.grey[800],
                   ),
