@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -60,6 +61,16 @@ class _UserProfileState extends State<UserProfile> {
     return count;
   }
 
+  final AsyncMemoizer _memoizer = AsyncMemoizer();
+
+  getUserProfile(BuildContext context) {
+    final db = Provider.of<Database>(context, listen: false);
+    return _memoizer.runOnce(() async {
+      final res = await db.getUserProfilePosts(widget.user);
+      return res;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
@@ -69,67 +80,73 @@ class _UserProfileState extends State<UserProfile> {
         backgroundColor: Colors.black,
         title: Text("Profile"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            buildCard(deviceSize,
-                photoUrl: widget.user.photoUrl,
-                name: widget.user.displayName,
-                branch: widget.user.branch),
-            FutureBuilder(
-                future: db.getUserProfilePosts(widget.user),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return ColorLoader3(
-                      radius: 16,
-                      dotRadius: 6,
-                    );
-                  }
-                  List<Post> _posts = [];
-                  snapshot.data.documents.forEach((doc) {
-                    Post post = Post.fromMap(doc.data);
-                    _posts.add(post);
-                  });
+      body: RefreshIndicator(
+        onRefresh: () {
+          return db.getUserProfilePosts(widget.user);
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              buildCard(deviceSize,
+                  photoUrl: widget.user.photoUrl,
+                  name: widget.user.displayName,
+                  branch: widget.user.branch),
+              FutureBuilder(
+                  future: getUserProfile(context),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return ColorLoader3(
+                        radius: 16,
+                        dotRadius: 6,
+                      );
+                    }
+                    List<Post> _posts = [];
+                    snapshot.data.documents.forEach((doc) {
+                      Post post = Post.fromMap(doc.data);
+                      _posts.add(post);
+                    });
 
-                  if (_posts.isEmpty) {
-                    return Center(
-                      child: Text("No Posts to Show"),
-                    );
-                  }
+                    if (_posts.isEmpty) {
+                      return Center(
+                        child: Text("No Posts to Show"),
+                      );
+                    }
 
-                  return Flexible(
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        bool isLiked = _posts[index].likes[db.userId] == true;
+                    return Flexible(
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          bool isLiked = _posts[index].likes[db.userId] == true;
 
-                        return buildFeedCard(context, onLiked: () {
-                          handleLikePost(_posts[index]);
+                          return buildFeedCard(context, onLiked: () {
+                            handleLikePost(_posts[index]);
+                          },
+                              isLiked: isLiked,
+                              likeCount: getLikeCount(_posts[index]),
+                              photoUrl: _posts[index].photoUrl,
+                              name: _posts[index].userName,
+                              timestamp: _posts[index].updatedAt == null
+                                  ? format
+                                      .format(_posts[index].createdAt.toDate())
+                                      .toString()
+                                  : '✏️ ' +
+                                      format
+                                          .format(
+                                              _posts[index].updatedAt.toDate())
+                                          .toString(),
+                              content: _posts[index].content,
+                              title: _posts[index].title);
                         },
-                            isLiked: isLiked,
-                            likeCount: getLikeCount(_posts[index]),
-                            photoUrl: _posts[index].photoUrl,
-                            name: _posts[index].userName,
-                            timestamp: _posts[index].updatedAt == null
-                                ? format
-                                    .format(_posts[index].createdAt.toDate())
-                                    .toString()
-                                : '✏️ ' +
-                                    format
-                                        .format(
-                                            _posts[index].updatedAt.toDate())
-                                        .toString(),
-                            content: _posts[index].content,
-                            title: _posts[index].title);
-                      },
-                      itemCount: _posts.length,
-                    ),
-                  );
-                })
-          ],
+                        itemCount: _posts.length,
+                      ),
+                    );
+                  })
+            ],
+          ),
         ),
       ),
     );

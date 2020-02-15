@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:kssem/Models/student.dart';
+import 'package:kssem/Notifiers/classroom.dart';
+import '../Models/class.dart';
 import '../Models/post.dart';
 import '../Models/faculty.dart';
 import '../Models/users.dart';
@@ -26,9 +29,11 @@ abstract class Database {
   unLikePost(Post post);
   handleSearch(String query, SearchNotifier students);
   getUserProfilePosts(Users user);
-  deletePost(
-    Post post,
-  );
+  deletePost(Post post);
+  addclassRoom(ClassRoom classRoom);
+  getClassRoom(ClassRoomNotifier classRooms);
+  getClassStudents(ClassRoom classRoom, ClassRoomNotifier classRoomNotify);
+  addStudentstoClass(ClassRoom classRoom, List<Student> selectedStudents);
   get userId;
   // get dateTime;
   get timestamp;
@@ -45,18 +50,14 @@ class FirestoreDatabase implements Database {
   get displayName => user.displayName;
   get photoUrl => user.photoUrl;
   get userId => uid;
-  // get dateTime => date();
   get timestamp => firestoreTimestamp;
 
   final _service = FirestoreService.instance;
-  // String date() => DateTime.now().toIso8601String();
   final firestoreTimestamp = Timestamp.now();
 
-  // checkStudentprofile() async {
-  //   final ref =
-  //       await Firestore.instance.collection('students').document('$uid').get();
-  //   return Student.fromMap(ref.data, uid);
-  // }
+// The following methods up until getUserProfilePosts is used for handling all the database CRUD operatiojns for the forum of the app
+// where users can upload a  post, edit a post, like a post and delete a post, they can also search for each user individually
+// and go to their profile to see thier posts and like or unlike those posts along with data pagination.
 
   @override
   Future<void> setFaculty(Faculty faculty) async => await _service.setData(
@@ -174,20 +175,6 @@ class FirestoreDatabase implements Database {
       print(post.postId);
     }
   }
-
-  // Future<void> setTimeline(Post post, bool isUpdating) async {
-  //   final timelineref = Firestore.instance.collection('timeline');
-
-  //   if (isUpdating) {
-  //     post.updatedAt = Timestamp.now();
-  //     await ref.document(post.postId).updateData(post.toMap());
-  //   } else {
-  //     post.createdAt = Timestamp.now();
-  //     DocumentReference documentRef = await ref.add(post.toMap());
-  //     post.postId = documentRef.documentID;
-  //     await documentRef.setData(post.toMap(), merge: true);
-  //   }
-  // }
 
   DocumentSnapshot lastDocument;
   bool hasMore = true;
@@ -327,4 +314,78 @@ class FirestoreDatabase implements Database {
         .getDocuments();
     return snapshot;
   }
+
+  // This marks the end of the methods for the forum
+
+  // The following methods below are used to the deal with the CRUD operations for the Academic Screen Where Teachers will
+  // Handle operations such as adding classrooms, adding subjects and students for the respective classrooms and marking the
+  // attendance and the marks of each student for each subject.
+
+  addclassRoom(ClassRoom classRoom) async {
+    final ref = Firestore.instance
+        .collection('departments')
+        .document('${classRoom.department}')
+        .collection('${classRoom.batch}')
+        .document('${classRoom.className}');
+    await ref.setData(classRoom.toMap());
+  }
+
+  getClassRoom(ClassRoomNotifier classRooms) async {
+    final snapshot = await Firestore.instance
+        .collection('departments')
+        .document('CSE')
+        .collection('2017')
+        .getDocuments();
+
+    final snapshottwo = await Firestore.instance
+        .collection('departments')
+        .document('CSE')
+        .collection('2018')
+        .getDocuments();
+
+    // .document('${classRoom.className}');
+    List<ClassRoom> _classess = [];
+    snapshot.documents.forEach((doc) {
+      ClassRoom _classRoom = ClassRoom.fromMap(doc.data);
+      _classess.add(_classRoom);
+    });
+    snapshottwo.documents.forEach((doc) {
+      ClassRoom _classRoom = ClassRoom.fromMap(doc.data);
+      _classess.add(_classRoom);
+    });
+    classRooms.classRooms = _classess;
+  }
+
+  getClassStudents(
+      ClassRoom classRoom, ClassRoomNotifier classRoomNotify) async {
+    // print(classRoom.batch);
+    // print(classRoom.department);
+    final snapshot = await Firestore.instance
+        .collection('students')
+        .where('classKey', isEqualTo: classRoom.classKey)
+        .orderBy('usn')
+        .getDocuments();
+    // print(snapshot.documents.length);
+    List<Student> _clasStudents = [];
+    snapshot.documents.forEach((doc) {
+      Student _student = Student.fromMap(doc.data);
+      _clasStudents.add(_student);
+    });
+    classRoomNotify.classStudents = _clasStudents;
+  }
+
+  addStudentstoClass(
+      ClassRoom classRoom, List<Student> selectedStudents) async {
+    final snapshot = Firestore.instance
+        .collection('departments')
+        .document(classRoom.department)
+        .collection(classRoom.batch)
+        .document(classRoom.className)
+        .collection('students');
+
+    selectedStudents.forEach((data) async {
+      await snapshot.document(data.uid).setData(data.toMap());
+    });
+  }
+  
 }

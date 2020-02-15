@@ -116,14 +116,7 @@ class AuthScreen extends StatelessWidget {
               child: Image.asset('assets/google.gif'),
             ),
           ),
-          // SizedBox(
-          //   width: 100,
-          //   height: 100,
-          //   child: Icon(
-          //     MaterialCommunityIcons.google,
-          //     size: 40,
-          //   ),
-          // ),
+
           onTap: onTap,
         ),
       ),

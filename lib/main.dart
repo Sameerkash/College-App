@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kssem/Notifiers/classroom.dart';
 import 'package:kssem/Notifiers/profile_notifier.dart';
 import 'package:kssem/Notifiers/search_notifier.dart';
 // import 'package:kssem/Notifiers/theme_changer.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<SearchNotifier>(
           create: (context) => SearchNotifier(),
+        ),
+        ChangeNotifierProvider<ClassRoomNotifier>(
+          create: (context) => ClassRoomNotifier(),
         )
         // ChangeNotifierProvider<ThemeChanger>(
         //   create: (_) => ThemeChanger(
@@ -59,6 +63,7 @@ class MatApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        theme: ThemeData(primaryColor: Colors.black),
         // theme: Provider.of<ThemeChanger>(context).getTheme(),
         home: Scaffold(
           body: ScreenController(),
