@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shape_of_view/shape_of_view.dart';
 
 class AcademicScreen extends StatefulWidget {
   static const route = '/academics';
@@ -85,12 +84,12 @@ class _AcademicScreenState extends State<AcademicScreen>
               ], begin: Alignment.topLeft),
             ),
             // width: _deviceSize.width*.9,
-            padding: EdgeInsets.only(bottom: 10),
-            child: ShapeOfView(
-              shape: ArcShape(
-                  direction: ArcDirection.Outside,
-                  height: 35,
-                  position: ArcPosition.Bottom),
+            // padding: EdgeInsets.only(bottom: 10),
+            // child: ShapeOfView(
+            //   shape: ArcShape(
+            //       direction: ArcDirection.Outside,
+            //       height: 35,
+            //       position: ArcPosition.Bottom),
               child: Container(
                 height: 140,
                 width: double.infinity,
@@ -141,7 +140,7 @@ class _AcademicScreenState extends State<AcademicScreen>
                 ),
               ),
             ),
-          ),
+          // ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Container(

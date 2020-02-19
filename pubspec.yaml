@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,18 +26,21 @@ dependencies:
   provider: ^4.0.1
   intl: ^0.16.1
   curved_navigation_bar: ^0.3.0
-  shape_of_view: ^1.0.2
+  # shape_of_view: ^1.0.2
   table_calendar: ^2.0.0
   cloud_firestore: ^0.12.9+4
   firebase_auth: ^0.15.3
   firebase_core: ^0.4.3+1
   google_sign_in: ^4.1.1
   flutter_vector_icons: ^0.2.1
-  cached_network_image: ^2.0.0
+  # cached_network_image: ^2.0.0
   google_fonts: ^0.3.2
   auto_size_text: ^2.1.0
   uuid: ^2.0.4
   async: ^2.4.0
+  path: ^1.6.4
+  firebase_storage: ^3.1.1
+  image_picker: ^0.6.3+1
 
 
 

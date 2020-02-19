@@ -7,6 +7,7 @@ class Post {
   final String photoUrl;
   final String content;
   final String title;
+  String imageUrl;
   Timestamp createdAt;
   Timestamp updatedAt;
   Map likes;
@@ -18,6 +19,7 @@ class Post {
     this.photoUrl,
     this.content,
     this.title,
+    this.imageUrl,
     this.createdAt,
     this.updatedAt,
     this.likes,
@@ -35,6 +37,7 @@ class Post {
     final String photoUrl = data['photoUrl'];
     final String content = data['content'];
     final String title = data['title'];
+    final String imageUrl = data['imageUrl'];
     Timestamp createdAt = data['createdAt'];
     Timestamp updatedAt = data['updatedat'];
     final Map likes = data["likes"];
@@ -45,6 +48,7 @@ class Post {
         photoUrl: photoUrl,
         content: content,
         title: title,
+        imageUrl: imageUrl,
         createdAt: createdAt,
         updatedAt: updatedAt,
         likes: likes);
@@ -58,17 +62,19 @@ class Post {
       'photoUrl': photoUrl,
       'content': content,
       'title': title,
+      'imageUrl': imageUrl,
       'createdAt': createdAt,
       'updatedat': updatedAt,
       'likes': {},
     };
   }
-   Map<String, dynamic> toUpdateMap() {
+
+  Map<String, dynamic> toUpdateMap() {
     return {
-     
       'postId': postId,
       // 'userName': userName,
       // 'photoUrl': photoUrl,
+      'imageUrl': imageUrl,
       'content': content,
       'title': title,
       'createdAt': createdAt,
@@ -78,12 +84,12 @@ class Post {
   }
 }
 
-
 class UpdatePost {
   // final String uid;
   String postId;
   // final String userName;
   // final String photoUrl;
+  String imageUrl;
   final String content;
   final String title;
   // Timestamp createdAt;
@@ -93,6 +99,7 @@ class UpdatePost {
   UpdatePost({
     // this.uid,
     this.postId,
+    this.imageUrl,
     // this.userName,
     // this.photoUrl,
     this.content,
@@ -107,6 +114,7 @@ class UpdatePost {
       'postId': postId,
       // 'userName': userName,
       // 'photoUrl': photoUrl,
+      'imageUrl': imageUrl,
       'content': content,
       'title': title,
       // 'createdAt': createdAt,
@@ -115,4 +123,3 @@ class UpdatePost {
     };
   }
 }
-

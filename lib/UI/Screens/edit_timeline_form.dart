@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kssem/Notifiers/timeline_notifier.dart';
 import '../../Models/post.dart';
 import '../../Notifiers/profile_notifier.dart';
 import '../../Services/database.dart';
@@ -23,14 +27,142 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
   String _title;
   Post _currentPost;
 
+  File _imageFile;
+  bool _iSimageUpdated = false;
+  bool _isImageReomved = false;
+  String _imageUrl;
+
   @override
   void initState() {
     ProfileNotifier posts =
         Provider.of<ProfileNotifier>(context, listen: false);
     if (posts.currentPost != null) {
       _currentPost = posts.currentPost;
+
+      _imageUrl = _currentPost.imageUrl;
     }
     super.initState();
+  }
+
+  _showImage() {
+    if (_imageFile == null && _imageUrl == null) {
+      return Container();
+      // return Text("image placeholder");
+    } else if (_imageFile != null) {
+      // print("showing image from local file ");
+      return Stack(children: [
+        Container(
+          color: Colors.grey[200],
+          height: 500,
+          width: 400,
+          child: Image.file(
+            _imageFile,
+            fit: BoxFit.contain,
+          ),
+        ),
+        Positioned(
+          top: 420,
+          left: 40,
+          child: FlatButton(
+            color: Colors.white,
+            onPressed: () {
+              _getLocalImage();
+              _iSimageUpdated = true;
+              _isImageReomved = false;
+            },
+            child: Text(
+              "Change Image",
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 420,
+          left: 220,
+          child: FlatButton(
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                _imageFile = null;
+                _isImageReomved = true;
+                _iSimageUpdated = false;
+              });
+            },
+            child: Text(
+              "Remove Image",
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ),
+        )
+      ]);
+    } else if (_imageUrl != null) {
+      // print('showing image from url');
+
+      return Stack(
+        // alignment: AlignmentDirectional.bottomCenter,
+        children: <Widget>[
+          Container(
+            color: Colors.grey[200],
+            height: 500,
+            width: 400,
+            child: Image.network(
+              _imageUrl,
+              fit: BoxFit.contain,
+            ),
+          ),
+          Positioned(
+            top: 420,
+            left: 40,
+            child: FlatButton(
+              color: Colors.white,
+              onPressed: () {
+                _getLocalImage();
+                _iSimageUpdated = true;
+                _isImageReomved = false;
+              },
+              child: Text(
+                "Change Image",
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 420,
+            left: 220,
+            child: FlatButton(
+              color: Colors.white,
+              onPressed: () {
+                setState(() {
+                  _imageFile = null;
+                  _imageUrl = null;
+                  _isImageReomved = true;
+                  _iSimageUpdated = false;
+
+                  print("isremoved $_isImageReomved");
+                });
+              },
+              child: Text(
+                "Remove Image",
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
+            ),
+          )
+        ],
+      );
+    }
+  }
+
+  _getLocalImage() async {
+    File imageFile = await ImagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70,
+        maxWidth: 400,
+        maxHeight: 500);
+    if (imageFile != null) {
+      setState(() {
+        _imageFile = imageFile;
+      });
+    }
   }
 
   @override
@@ -99,6 +231,24 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
                               maxLines: 2,
                             ),
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                            child: _imageFile == null && _imageUrl == null
+                                ? Container(
+                                    width: 400,
+                                    child: FlatButton(
+                                      color: Colors.black,
+                                      child: Text(
+                                        "Add Image",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        _getLocalImage();
+                                      },
+                                    ),
+                                  )
+                                : _showImage(),
+                          ),
                           TextFormField(
                             initialValue: _currentPost.content,
                             decoration: InputDecoration(
@@ -156,24 +306,36 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
     final db = Provider.of<Database>(context, listen: false);
     if (_validateAndSaveForm()) {
       try {
-        // String dateTime = DateTime.now().toIso8601String();
-        // Timestamp timeStamp = Timestamp.now();
+        print("current url ${_currentPost.imageUrl}");
         UpdatePost updatePost = UpdatePost(
           postId: _currentPost.postId,
-          // createdAt: _currentPost.createdAt,
+          imageUrl: _currentPost.imageUrl,
           title: _title,
           content: _content,
         );
-        // print(_currentPost.postId);  
+
         setState(() {
           _isLoading = true;
         });
-        await db.setPost(widget.isUpdating, updatePost: updatePost);
-        // await db.setTimeline(post, widget.isUpdating);
+        await db.setPostImage(widget.isUpdating,
+            updatePost: updatePost,
+            localFile: _imageFile,
+            isImageUpdated: _iSimageUpdated,
+            isImageRemoved: _isImageReomved);
+
+              TimelineNotifer timelinePosts =
+            Provider.of<TimelineNotifer>(context, listen: false);
+        db.getTimeline(timelinePosts);
+        ProfileNotifier posts =
+            Provider.of<ProfileNotifier>(context, listen: false);
+        db.getPosts(posts);
+
 
         setState(() {
           _isLoading = false;
         });
+
+      
         Navigator.pop(context);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(

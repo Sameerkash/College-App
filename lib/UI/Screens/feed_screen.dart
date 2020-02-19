@@ -114,7 +114,7 @@ class _FeedScreenState extends State<FeedScreen>
               icon: Icon(Icons.search),
               onPressed: () {
                 searchNotifier.usersList = [];
-                searchNotifier.querySuccess= true;
+                searchNotifier.querySuccess = true;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -149,6 +149,7 @@ class _FeedScreenState extends State<FeedScreen>
 
                   return buildFeedCard(
                     context,
+                    imageUrl: timelinePosts.timelinePosts[index].imageUrl,
                     isLiked: isLiked,
                     likeCount: getLikeCount(timelinePosts.timelinePosts[index]),
                     onLiked: () {
@@ -177,6 +178,7 @@ class _FeedScreenState extends State<FeedScreen>
               ),
             ),
       floatingActionButton: FloatingActionButton(
+          heroTag: 'timelinePost',
           child: Icon(
             Octicons.pencil,
             color: Colors.white,

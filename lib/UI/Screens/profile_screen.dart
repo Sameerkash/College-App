@@ -234,6 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   _deletePost(posts.posts[i]);
                                 }
                               },
+                              imageUrl: posts.posts[i].imageUrl,
                               photoUrl: posts.posts[i].photoUrl,
                               name: posts.posts[i].userName,
                               timestamp: posts.posts[i].updatedAt == null

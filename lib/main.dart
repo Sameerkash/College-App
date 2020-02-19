@@ -45,9 +45,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SearchNotifier>(
           create: (context) => SearchNotifier(),
         ),
-        ChangeNotifierProvider<ClassRoomNotifier>(
-          create: (context) => ClassRoomNotifier(),
-        )
+        // ChangeNotifierProvider<ClassRoomNotifier>(
+        //   create: (context) => ClassRoomNotifier(),
+        // )
         // ChangeNotifierProvider<ThemeChanger>(
         //   create: (_) => ThemeChanger(
         //     ThemeData.dark(),

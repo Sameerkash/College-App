@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:kssem/Models/student.dart';
-import 'package:kssem/Notifiers/classroom.dart';
-import '../Models/class.dart';
+import 'package:path/path.dart' as path;
 import '../Models/post.dart';
 import '../Models/faculty.dart';
 import '../Models/users.dart';
@@ -30,10 +30,17 @@ abstract class Database {
   handleSearch(String query, SearchNotifier students);
   getUserProfilePosts(Users user);
   deletePost(Post post);
-  addclassRoom(ClassRoom classRoom);
-  getClassRoom(ClassRoomNotifier classRooms);
-  getClassStudents(ClassRoom classRoom, ClassRoomNotifier classRoomNotify);
-  addStudentstoClass(ClassRoom classRoom, List<Student> selectedStudents);
+  setPostImage(bool isUpdating,
+      {UpdatePost updatePost,
+      Post post,
+      File localFile,
+      bool isImageUpdated,
+      bool isImageRemoved});
+  // addclassRoom(ClassRoom classRoom);
+  // getClassRoom(ClassRoomNotifier classRooms);
+  // getClassStudents(ClassRoom classRoom, ClassRoomNotifier classRoomNotify);
+  // addStudentstoClass(ClassRoom classRoom, List<Student> selectedStudents);
+  // getSelectedClassStudents(ClassRoomNotifier classRoomNotify);
   get userId;
   // get dateTime;
   get timestamp;
@@ -151,8 +158,57 @@ class FirestoreDatabase implements Database {
     faculty.setFacultyProfile = _faculty;
   }
 
-  Future<void> setPost(bool isUpdating,
-      {UpdatePost updatePost, Post post}) async {
+  setPostImage(bool isUpdating,
+      {UpdatePost updatePost,
+      Post post,
+      File localFile,
+      bool isImageUpdated,
+      bool isImageRemoved}) async {
+    if (localFile != null) {
+      // print("uploading image");
+      var fileExtension = path.extension(localFile.path);
+      // print(fileExtension);
+
+      var uuid = Uuid().v4();
+
+      final StorageReference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
+          .child('posts/images/$uuid$fileExtension');
+
+      await firebaseStorageRef
+          .putFile(localFile)
+          .onComplete
+          .catchError((onError) {
+        print(onError);
+        return false;
+      });
+
+      String url = await firebaseStorageRef.getDownloadURL();
+      // print("download url: $url");
+
+      setPost(isUpdating,
+          updatePost: updatePost,
+          post: post,
+          imageUrl: url,
+          isImageUpdated: isImageUpdated,
+          isImageRemoved: isImageRemoved);
+    } else {
+      setPost(isUpdating,
+          updatePost: updatePost,
+          post: post,
+          isImageRemoved: isImageRemoved,
+          isImageUpdated: isImageUpdated);
+    }
+  }
+
+  Future<void> setPost(
+    bool isUpdating, {
+    UpdatePost updatePost,
+    Post post,
+    String imageUrl,
+    bool isImageRemoved,
+    bool isImageUpdated,
+  }) async {
     var uuid = Uuid().v4();
     final profileref = Firestore.instance.collection('posts/$uid/userPosts');
 
@@ -160,6 +216,38 @@ class FirestoreDatabase implements Database {
 
     if (isUpdating) {
       updatePost.updatedAt = Timestamp.now();
+
+      var deleteUrl = updatePost.imageUrl;
+      // print("delete url $deleteUrl");
+      // print(" is removed in database $isImageRemoved");
+
+      if (isImageRemoved == true && deleteUrl != null) {
+        // print("IMAGEDeleted called");
+        StorageReference storageReference =
+            await FirebaseStorage.instance.getReferenceFromUrl(deleteUrl);
+        await storageReference.delete();
+        updatePost.imageUrl = null;
+      }
+
+      if (isImageUpdated == true) {
+        // print("isupdated $isImageUpdated");
+
+        if (deleteUrl != null) {
+          StorageReference storageReference =
+              await FirebaseStorage.instance.getReferenceFromUrl(deleteUrl);
+          await storageReference.delete();
+          updatePost.imageUrl = imageUrl;
+        }
+        updatePost.imageUrl = imageUrl;
+      }
+
+      if (isImageUpdated == false &&
+          isImageRemoved == false &&
+          imageUrl != null) {
+        // print("imageUrl $imageUrl");
+        updatePost.imageUrl = imageUrl;
+      }
+
       // print(post.postId);
       await profileref
           .document(updatePost.postId)
@@ -168,6 +256,7 @@ class FirestoreDatabase implements Database {
           .document(updatePost.postId)
           .updateData(updatePost.toUpdateMap());
     } else {
+      post.imageUrl = imageUrl;
       post.createdAt = Timestamp.now();
       post.postId = uuid;
       await profileref.document('$uuid').setData(post.toMap(), merge: true);
@@ -247,6 +336,16 @@ class FirestoreDatabase implements Database {
   deletePost(
     Post post,
   ) async {
+    if (post.imageUrl != null) {
+      StorageReference storageReference =
+          await FirebaseStorage.instance.getReferenceFromUrl(post.imageUrl);
+
+      print(storageReference.path);
+
+      await storageReference.delete();
+
+      print('image deleted');
+    }
     final profileref = Firestore.instance.collection('posts/$uid/userPosts');
     final timelineref = Firestore.instance.collection('timeline');
 
@@ -321,71 +420,87 @@ class FirestoreDatabase implements Database {
   // Handle operations such as adding classrooms, adding subjects and students for the respective classrooms and marking the
   // attendance and the marks of each student for each subject.
 
-  addclassRoom(ClassRoom classRoom) async {
-    final ref = Firestore.instance
-        .collection('departments')
-        .document('${classRoom.department}')
-        .collection('${classRoom.batch}')
-        .document('${classRoom.className}');
-    await ref.setData(classRoom.toMap());
-  }
+  // addclassRoom(ClassRoom classRoom) async {
+  //   final ref = Firestore.instance
+  //       .collection('departments')
+  //       .document('${classRoom.department}')
+  //       .collection('${classRoom.batch}')
+  //       .document('${classRoom.className}');
+  //   await ref.setData(classRoom.toMap());
+  // }
 
-  getClassRoom(ClassRoomNotifier classRooms) async {
-    final snapshot = await Firestore.instance
-        .collection('departments')
-        .document('CSE')
-        .collection('2017')
-        .getDocuments();
+  // getClassRoom(ClassRoomNotifier classRooms) async {
+  //   final snapshot = await Firestore.instance
+  //       .collection('departments')
+  //       .document('CSE')
+  //       .collection('2017')
+  //       .getDocuments();
 
-    final snapshottwo = await Firestore.instance
-        .collection('departments')
-        .document('CSE')
-        .collection('2018')
-        .getDocuments();
+  //   final snapshottwo = await Firestore.instance
+  //       .collection('departments')
+  //       .document('CSE')
+  //       .collection('2018')
+  //       .getDocuments();
 
-    // .document('${classRoom.className}');
-    List<ClassRoom> _classess = [];
-    snapshot.documents.forEach((doc) {
-      ClassRoom _classRoom = ClassRoom.fromMap(doc.data);
-      _classess.add(_classRoom);
-    });
-    snapshottwo.documents.forEach((doc) {
-      ClassRoom _classRoom = ClassRoom.fromMap(doc.data);
-      _classess.add(_classRoom);
-    });
-    classRooms.classRooms = _classess;
-  }
+  //   // .document('${classRoom.className}');
+  //   List<ClassRoom> _classess = [];
+  //   snapshot.documents.forEach((doc) {
+  //     ClassRoom _classRoom = ClassRoom.fromMap(doc.data);
+  //     _classess.add(_classRoom);
+  //   });
+  //   snapshottwo.documents.forEach((doc) {
+  //     ClassRoom _classRoom = ClassRoom.fromMap(doc.data);
+  //     _classess.add(_classRoom);
+  //   });
+  //   classRooms.classRooms = _classess;
+  // }
 
-  getClassStudents(
-      ClassRoom classRoom, ClassRoomNotifier classRoomNotify) async {
-    // print(classRoom.batch);
-    // print(classRoom.department);
-    final snapshot = await Firestore.instance
-        .collection('students')
-        .where('classKey', isEqualTo: classRoom.classKey)
-        .orderBy('usn')
-        .getDocuments();
-    // print(snapshot.documents.length);
-    List<Student> _clasStudents = [];
-    snapshot.documents.forEach((doc) {
-      Student _student = Student.fromMap(doc.data);
-      _clasStudents.add(_student);
-    });
-    classRoomNotify.classStudents = _clasStudents;
-  }
+  // getClassStudents(
+  //     ClassRoom classRoom, ClassRoomNotifier classRoomNotify) async {
+  //   // print(classRoom.batch);
+  //   // print(classRoom.department);
+  //   final snapshot = await Firestore.instance
+  //       .collection('students')
+  //       .where('classKey', isEqualTo: classRoom.classKey)
+  //       .orderBy('usn')
+  //       .getDocuments();
+  //   // print(snapshot.documents.length);
+  //   List<Student> _clasStudents = [];
+  //   snapshot.documents.forEach((doc) {
+  //     Student _student = Student.fromMap(doc.data);
+  //     _clasStudents.add(_student);
+  //   });
+  //   classRoomNotify.classStudents = _clasStudents;
+  // }
 
-  addStudentstoClass(
-      ClassRoom classRoom, List<Student> selectedStudents) async {
-    final snapshot = Firestore.instance
-        .collection('departments')
-        .document(classRoom.department)
-        .collection(classRoom.batch)
-        .document(classRoom.className)
-        .collection('students');
+  // addStudentstoClass(
+  //     ClassRoom classRoom, List<Student> selectedStudents) async {
+  //   final snapshot = Firestore.instance
+  //       .collection('departments')
+  //       .document(classRoom.department)
+  //       .collection(classRoom.batch)
+  //       .document(classRoom.className)
+  //       .collection('students');
 
-    selectedStudents.forEach((data) async {
-      await snapshot.document(data.uid).setData(data.toMap());
-    });
-  }
-  
+  //   selectedStudents.forEach((data) async {
+  //     await snapshot.document(data.uid).setData(data.toMap());
+  //   });
+  // }
+
+  // getSelectedClassStudents(ClassRoomNotifier classRoomNotify) async {
+  //   final snapshot = await Firestore.instance
+  //       .collection('departments')
+  //       .document(classRoomNotify.currentClass.department)
+  //       .collection(classRoomNotify.currentClass.batch)
+  //       .document(classRoomNotify.currentClass.className)
+  //       .collection('students')
+  //       .getDocuments();
+
+  //   List<Student> _clasStudents = [];
+  //   snapshot.documents.forEach((doc) {
+  //     Student _student = Student.fromMap(doc.data);
+  //     _clasStudents.add(_student);
+  //   });
+  //   classRoomNotify.selectedStudentsList = _clasStudents;
+  // }
 }

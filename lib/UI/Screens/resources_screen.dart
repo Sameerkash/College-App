@@ -18,9 +18,14 @@ class _ResourceScreenState extends State<ResourceScreen>
     with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
   CalendarController calendarController;
-  String _classRoom;
+  TextEditingController _textEditingController;
+  String _event;
   String _batch;
   String _department;
+
+  Map<DateTime, List<dynamic>> _events;
+  List<dynamic> _selectedEvents;
+
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -29,12 +34,16 @@ class _ResourceScreenState extends State<ResourceScreen>
     // final db = Provider.of<Database>(context, listen: false);
     // db.getClassRoom(classRoom);
     super.initState();
+    _events = {};
+    _selectedEvents = [];
+    _textEditingController = TextEditingController();
     calendarController = CalendarController();
   }
 
   @override
   void dispose() {
     calendarController.dispose();
+    _textEditingController.dispose();
     super.dispose();
   }
 
@@ -43,22 +52,22 @@ class _ResourceScreenState extends State<ResourceScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    ClassRoomNotifier classRoom = Provider.of<ClassRoomNotifier>(context);
+    // ClassRoomNotifier classRoom = Provider.of<ClassRoomNotifier>(context);
     final db = Provider.of<Database>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 10, bottom: 12, right: 35),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-              ),
-              padding: EdgeInsets.only(left: 10, right: 5),
-              child: buildDropDownButton(() => db.getClassRoom(classRoom)),
-            ),
-          )
+          // Padding(
+          //   padding: EdgeInsets.only(top: 10, bottom: 12, right: 35),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(20),
+          //       color: Colors.white,
+          //     ),
+          //     // padding: EdgeInsets.only(left: 10, right: 5),
+          //     // child: buildDropDownButton(() => db.getClassRoom(classRoom)),
+          //   ),
+          // )
         ],
         backgroundColor: Colors.black,
         title: Text(
@@ -68,7 +77,7 @@ class _ResourceScreenState extends State<ResourceScreen>
       ),
       body: RefreshIndicator(
         onRefresh: () {
-          return db.getClassRoom(classRoom);
+          // return db.getClassRoom(classRoom);
         },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -84,54 +93,84 @@ class _ResourceScreenState extends State<ResourceScreen>
                         isScrollControlled: true);
                   }),
               SizedBox(
+                height: 20,
+              ),
+              TableCalendar(
+                
+                onDaySelected: (date, events) {
+                  _selectedEvents = events;
+                },
+                events: _events,
+                calendarController: calendarController,
+                headerStyle: HeaderStyle(
+                  formatButtonShowsNext: false,
+                ),
+                startingDayOfWeek: StartingDayOfWeek.monday,
+              ),
+              Divider(
+                color: Colors.indigoAccent,
+                thickness: 10,
                 height: 50,
               ),
-              classRoom.classRooms.length == null
-                  ? Center(
-                      child: Text("No classes"),
-                    )
-                  : Flexible(
-                      child: GridView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: classRoom.classRooms.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3),
-                          itemBuilder: (conext, index) {
-                            return InkWell(
-                              onTap: () {
-                                classRoom.currentClasRoom =
-                                    classRoom.classRooms[index];
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ClassRoomScreen()),
-                                );
-                              },
-                              child: Card(
-                                elevation: 3,
-                                child: GridTile(
-                                  child: Center(
-                                    child: Text(
-                                        classRoom.classRooms[index].className,
-                                        style: TextStyle(
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                  footer: Text(
-                                      classRoom.classRooms[index].department,
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                            );
-                          }),
-                    )
+              ..._selectedEvents.map((event) => ListTile(
+                    title: Text(event),
+                  )),
+              // classRoom.classRooms.length == null
+              //     ? Center(
+              //         child: Text("No classes"),
+              //       )
+              //     : Flexible(
+              //         child: GridView.builder(
+              //             physics: NeverScrollableScrollPhysics(),
+              //             shrinkWrap: true,
+              //             itemCount: classRoom.classRooms.length,
+              //             gridDelegate:
+              //                 SliverGridDelegateWithFixedCrossAxisCount(
+              //                     crossAxisCount: 3),
+              //             itemBuilder: (conext, index) {
+              //               return InkWell(
+              //                 onTap: () {
+              //                   classRoom.currentClasRoom =
+              //                       classRoom.classRooms[index];
+              //                   Navigator.push(
+              //                     context,
+              //                     MaterialPageRoute(
+              //                         builder: (context) => ClassRoomScreen()),
+              //                   );
+              //                 },
+              //                 child: Card(
+              //                   elevation: 3,
+              //                   child: GridTile(
+              //                     child: Center(
+              //                       child: Text(
+              //                           classRoom.classRooms[index].className,
+              //                           style: TextStyle(
+              //                               fontSize: 28,
+              //                               fontWeight: FontWeight.bold)),
+              //                     ),
+              //                     footer: Text(
+              //                         classRoom.classRooms[index].department,
+              //                         style: TextStyle(
+              //                             fontSize: 18,
+              //                             fontWeight: FontWeight.bold)),
+              //                   ),
+              //                 ),
+              //               );
+              //             }),
+              //       ),
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              builder: buildBottomSheet,
+              isScrollControlled: true);
+        },
+        backgroundColor: Colors.black,
+        child: Icon(Icons.add_circle),
       ),
     );
   }
@@ -148,8 +187,9 @@ class _ResourceScreenState extends State<ResourceScreen>
             onTap: onTap,
           ),
           Divider(
-            height: 2,
-            color: Colors.grey,
+            thickness: 10,
+            height: 5,
+            color: Colors.indigoAccent,
           )
         ],
       ),
@@ -170,15 +210,23 @@ class _ResourceScreenState extends State<ResourceScreen>
     final db = Provider.of<Database>(context, listen: false);
     if (_validateAndSaveForm()) {
       try {
-        ClassRoom classRoom = ClassRoom(
-          className: _classRoom,
-          batch: _batch,
-          department: _department,
-        );
+        setState(() {
+          if (_events[calendarController.selectedDay] != null) {
+            _events[calendarController.selectedDay].add(_event);
+          } else {
+            _events[calendarController.selectedDay] = [_event];
+          }
+        });
+        // Navigator.pop(context);
+        // ClassRoom classRoom = ClassRoom(
+        //   className: _classRoom,
+        //   batch: _batch,
+        //   department: _department,
+        // );
 
-        db.addclassRoom(classRoom);
+        // db.addclassRoom(classRoom);
 
-        Navigator.pop(context);
+        // Navigator.pop(context);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
           title: 'Operation failed',
@@ -238,7 +286,7 @@ class _ResourceScreenState extends State<ResourceScreen>
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Text(
-                  "Add a Class",
+                  "Add an Event",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
@@ -249,17 +297,18 @@ class _ResourceScreenState extends State<ResourceScreen>
                   height: 25,
                 ),
                 TextFormField(
+                  maxLines: 2,
                   validator: (value) {
-                    if (value.isEmpty || value.length > 7) {
-                      return "Please enetr a valid Class Name";
+                    if (value.isEmpty) {
+                      return "Please enetr a valid description";
                     } else
                       return null;
                   },
                   onSaved: (value) {
-                    _classRoom = value.toUpperCase();
+                    _event = value;
                   },
                   decoration: InputDecoration(
-                    hintText: "Class Name",
+                    hintText: "Event Description",
                     hintStyle: TextStyle(color: Colors.black),
                     focusColor: Colors.black,
                     border: UnderlineInputBorder(
@@ -270,62 +319,62 @@ class _ResourceScreenState extends State<ResourceScreen>
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 25,
-                ),
-                TextFormField(
-                  onSaved: (value) {
-                    _batch = value;
-                  },
-                  validator: (value) {
-                    if (value.isEmpty || value.length > 4) {
-                      return "Please enetr a valid year";
-                    } else
-                      return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Year of Batch",
-                    hintStyle: TextStyle(color: Colors.black),
-                    focusColor: Colors.black,
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if ((value.contains("CSE") ||
-                            value.contains("ECE") ||
-                            value.contains("EEE") ||
-                            value.contains("ME") ||
-                            value.contains("CIV")) &&
-                        (value.length <= 3)) {
-                      return null;
-                    } else {
-                      return "Enter a valid Department";
-                    }
-                  },
-                  onSaved: (value) {
-                    _department = value.toUpperCase();
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Department",
-                    hintStyle: TextStyle(color: Colors.black),
-                    focusColor: Colors.black,
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                  ),
-                ),
+                // SizedBox(
+                //   height: 25,
+                // ),
+                // TextFormField(
+                //   onSaved: (value) {
+                //     _batch = value;
+                //   },
+                //   validator: (value) {
+                //     if (value.isEmpty || value.length > 4) {
+                //       return "Please enetr a valid year";
+                //     } else
+                //       return null;
+                //   },
+                //   decoration: InputDecoration(
+                //     hintText: "Year of Batch",
+                //     hintStyle: TextStyle(color: Colors.black),
+                //     focusColor: Colors.black,
+                //     border: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.grey),
+                //     ),
+                //     focusedBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.black),
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 25,
+                // ),
+                // TextFormField(
+                //   validator: (value) {
+                //     if ((value.contains("CSE") ||
+                //             value.contains("ECE") ||
+                //             value.contains("EEE") ||
+                //             value.contains("ME") ||
+                //             value.contains("CIV")) &&
+                //         (value.length <= 3)) {
+                //       return null;
+                //     } else {
+                //       return "Enter a valid Department";
+                //     }
+                //   },
+                //   onSaved: (value) {
+                //     _department = value.toUpperCase();
+                //   },
+                //   decoration: InputDecoration(
+                //     hintText: "Department",
+                //     hintStyle: TextStyle(color: Colors.black),
+                //     focusColor: Colors.black,
+                //     border: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.grey),
+                //     ),
+                //     focusedBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.black),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(
                   height: 60,
                 ),
@@ -333,7 +382,7 @@ class _ResourceScreenState extends State<ResourceScreen>
                   splashColor: Colors.indigo,
                   color: Colors.black,
                   child: Text(
-                    "Create",
+                    "Add",
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {

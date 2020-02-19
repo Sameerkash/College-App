@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kssem/Notifiers/profile_notifier.dart';
+import 'package:kssem/Notifiers/timeline_notifier.dart';
 import '../../Models/post.dart';
 import '../../Services/database.dart';
 import '../Widgets/platform_exceptoin_alert.dart';
@@ -21,9 +26,73 @@ class _TimelineFormState extends State<TimelineForm>
   bool get wantKeepAlive => true;
 
   bool _isLoading = false;
-
+  String _imageUrl;
+  File _imageFile;
   String _content;
   String _title;
+
+  _showImage() {
+    if (_imageFile == null && _imageUrl == null) {
+      return Container();
+      // return Text("image placeholder");
+    } else if (_imageFile != null) {
+      // print("showing image from local file ");
+      return Stack(children: [
+        Container(
+          color: Colors.grey[200],
+          height: 500,
+          width: 400,
+          child: Image.file(
+            _imageFile,
+            fit: BoxFit.contain,
+          ),
+        ),
+        Positioned(
+          top: 420,
+          left: 40,
+          child: FlatButton(
+            color: Colors.white,
+            onPressed: () {
+              _getLocalImage();
+            },
+            child: Text(
+              "Change Image",
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 420,
+          left: 220,
+          child: FlatButton(
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                _imageFile = null;
+              });
+            },
+            child: Text(
+              "Remove Image",
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ),
+        )
+      ]);
+    }
+  }
+
+  _getLocalImage() async {
+    File imageFile = await ImagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 75,
+        maxWidth: 400,
+        maxHeight: 500);
+    if (imageFile != null) {
+      setState(() {
+        _imageFile = imageFile;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +101,17 @@ class _TimelineFormState extends State<TimelineForm>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(MaterialCommunityIcons.image), onPressed: () {}),
-          IconButton(
-            icon: Icon(MaterialCommunityIcons.arrow_up_bold_circle),
-            onPressed: () {},
-          ),
-        ],
+        // actions: <Widget>[
+        //   IconButton(
+        //       icon: Icon(MaterialCommunityIcons.image),
+        //       onPressed: () {
+        //         _getLocalImage();
+        //       }),
+        //   IconButton(
+        //     icon: Icon(MaterialCommunityIcons.arrow_up_bold_circle),
+        //     onPressed: () {},
+        //   ),
+        // ],
       ),
       backgroundColor: Colors.grey[250],
       body: _isLoading
@@ -89,6 +161,24 @@ class _TimelineFormState extends State<TimelineForm>
                               },
                               maxLines: 2,
                             ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                            child: _imageFile == null
+                                ? Container(
+                                    width: 400,
+                                    child: FlatButton(
+                                      color: Colors.black,
+                                      child: Text(
+                                        "Add Image",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        _getLocalImage();
+                                      },
+                                    ),
+                                  )
+                                : _showImage(),
                           ),
                           TextFormField(
                             decoration: InputDecoration(
@@ -159,10 +249,20 @@ class _TimelineFormState extends State<TimelineForm>
           _isLoading = true;
         });
         // await db.setTimeline(post, widget.isUpdating);
-        await db.setPost( widget.isUpdating,post:post,);
+        await db.setPostImage(
+          widget.isUpdating,
+          post: post,
+          localFile: _imageFile,
+        );
         setState(() {
           _isLoading = false;
         });
+        TimelineNotifer timelinePosts =
+            Provider.of<TimelineNotifer>(context, listen: false);
+        db.getTimeline(timelinePosts);
+        ProfileNotifier posts =
+            Provider.of<ProfileNotifier>(context, listen: false);
+        db.getPosts(posts);
         Navigator.pop(context);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
@@ -170,7 +270,6 @@ class _TimelineFormState extends State<TimelineForm>
           exception: e,
         ).show(context);
       }
-      
     }
   }
 }

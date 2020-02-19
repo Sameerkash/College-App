@@ -12,6 +12,7 @@ buildFeedCard(BuildContext context,
     String timestamp,
     String photoUrl,
     String title,
+    String imageUrl,
     int likeCount,
     Function onLiked,
     bool isLiked}) {
@@ -41,7 +42,7 @@ buildFeedCard(BuildContext context,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         buildHeader(devicesize, name: name, photoUrl: photoUrl),
-        buildContent(content: content, title: title),
+        buildContent(content: content, title: title, imageUrl: imageUrl),
         buildFooter(devicesize,
             timestamp: timestamp,
             onLiked: onLiked,
@@ -52,7 +53,7 @@ buildFeedCard(BuildContext context,
   );
 }
 
-Flexible buildContent({String content, String title}) {
+Flexible buildContent({String content, String title, String imageUrl}) {
   return Flexible(
     fit: FlexFit.loose,
     child: Container(
@@ -74,6 +75,22 @@ Flexible buildContent({String content, String title}) {
               )
             ],
           ),
+          SizedBox(
+            height: 15,
+          ),
+          imageUrl == null
+              ? Container(
+                  height: 0,
+                )
+              : Container(
+                  color: Colors.grey[200],
+                  height: 500,
+                  width: 400,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.contain,
+                  ),
+                ),
           SizedBox(
             height: 5,
           ),
@@ -208,7 +225,7 @@ Container buildFooter(
             left: 10,
           ),
           child: Material(
-            borderRadius:BorderRadius.circular(25) ,
+            borderRadius: BorderRadius.circular(25),
             borderOnForeground: true,
             child: IconButton(
               enableFeedback: true,
@@ -304,6 +321,7 @@ buildProfileFeedCard(BuildContext context,
     String photoUrl,
     String timestamp,
     String title,
+    String imageUrl,
     Function onPressedEdit,
     Function onPressedDelete,
     Function onLiked,
@@ -339,7 +357,7 @@ buildProfileFeedCard(BuildContext context,
             photoUrl: photoUrl,
             onPressedDelete: onPressedDelete,
             onPressedEdit: onPressedEdit),
-        buildContent(content: content, title: title),
+        buildContent(content: content, title: title, imageUrl: imageUrl),
         buildFooter(
           devicesize,
           timestamp: timestamp,
