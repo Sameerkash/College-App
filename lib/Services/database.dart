@@ -89,10 +89,10 @@ class FirestoreDatabase implements Database {
       _posts.add(pos);
     });
     if (snapshot.documents.length < 10) {
-      // print(snapshot.documents.length);
+    
       hasMorePosts = false;
     }
-    // print(snapshot.documents.length);
+   
     if (snapshot.documents.length == 0) {
       return;
     } else {
@@ -108,7 +108,7 @@ class FirestoreDatabase implements Database {
     }
 
     if (!hasMorePosts) {
-      // print('No More posts');
+      
       return;
     }
 
@@ -131,9 +131,7 @@ class FirestoreDatabase implements Database {
     if (snapshot.documents.length < 10) {
       hasMorePosts = false;
     }
-    // if (snapshot.documents.length == 0 | 1) {
-    //   return;
-    // }
+
     if (snapshot.documents.length == 0) {
       return;
     } else {
@@ -165,9 +163,9 @@ class FirestoreDatabase implements Database {
       bool isImageUpdated,
       bool isImageRemoved}) async {
     if (localFile != null) {
-      // print("uploading image");
+     
       var fileExtension = path.extension(localFile.path);
-      // print(fileExtension);
+    
 
       var uuid = Uuid().v4();
 
@@ -184,7 +182,7 @@ class FirestoreDatabase implements Database {
       });
 
       String url = await firebaseStorageRef.getDownloadURL();
-      // print("download url: $url");
+     
 
       setPost(isUpdating,
           updatePost: updatePost,
@@ -218,8 +216,7 @@ class FirestoreDatabase implements Database {
       updatePost.updatedAt = Timestamp.now();
 
       var deleteUrl = updatePost.imageUrl;
-      // print("delete url $deleteUrl");
-      // print(" is removed in database $isImageRemoved");
+     
 
       if (isImageRemoved == true && deleteUrl != null) {
         // print("IMAGEDeleted called");
@@ -344,7 +341,6 @@ class FirestoreDatabase implements Database {
 
       await storageReference.delete();
 
-      print('image deleted');
     }
     final profileref = Firestore.instance.collection('posts/$uid/userPosts');
     final timelineref = Firestore.instance.collection('timeline');

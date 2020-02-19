@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:kssem/Models/post.dart';
 import 'package:kssem/Models/faculty.dart';
 

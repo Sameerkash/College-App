@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum Options {
   Edit,
@@ -96,9 +98,21 @@ Flexible buildContent({String content, String title, String imageUrl}) {
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-            child: Text(
-              content,
-              // "Blessed is the man, who having nothing to say, abstains from giving wordy evidence of the fact,Show me your garden and I shall tell you what you are,This stammer got me a home in Beverly Hills, and I'm not about to screw with it now.Bob Newhart this is a test wodidget so dont mind the eroors and all the other things because this i stesting the ability of the widget to expande on the scren aidbasknclas kc kkc aousbdka sdcjnaib kcasduahsojd ac moausboan smc ojuzcbas c,ac no nonas a sc loaio l saklsncbks cs acalzinocnaos c ac zpjabsondla cpknaosncasancdo asncaousnoa ls caslinpandas das;ampsnasd a. manscsl ca,c alsnbcdoacas dc laznsocbaosndlc lkaknsldalc a cakncoaosnjc a a lsjnjadl c alsdnaojsbdcaslc amcnsoduab;fksc cscjfo'sjdl cl nosdofsldf chbvhial calz knhabsjslc djbckskd cbjxcj dkc ksdousbdlc lsdclbcsjdcl sld csdjbco sld c lsdm cnsbdbjsd s cds c",
+            child: Linkify(
+              onOpen: (link) async {
+                if (await canLaunch(link.url)) {
+                  await launch(
+                    link.url,
+                    // forceWebView: true,
+                    enableJavaScript: true,
+                  );
+                } else {
+                  throw 'Could not launch $link';
+                }
+              },
+              style: TextStyle(fontSize: 16),
+              linkStyle: TextStyle(color: Colors.blue),
+              text: content,
             ),
           ),
         ],

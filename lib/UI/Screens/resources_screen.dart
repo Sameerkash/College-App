@@ -56,110 +56,104 @@ class _ResourceScreenState extends State<ResourceScreen>
     final db = Provider.of<Database>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[
-          // Padding(
-          //   padding: EdgeInsets.only(top: 10, bottom: 12, right: 35),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(20),
-          //       color: Colors.white,
-          //     ),
-          //     // padding: EdgeInsets.only(left: 10, right: 5),
-          //     // child: buildDropDownButton(() => db.getClassRoom(classRoom)),
-          //   ),
-          // )
-        ],
+        // actions: <Widget>[
+        //   // Padding(
+        //   //   padding: EdgeInsets.only(top: 10, bottom: 12, right: 35),
+        //   //   child: Container(
+        //   //     decoration: BoxDecoration(
+        //   //       borderRadius: BorderRadius.circular(20),
+        //   //       color: Colors.white,
+        //   //     ),
+        //   //     // padding: EdgeInsets.only(left: 10, right: 5),
+        //   //     // child: buildDropDownButton(() => db.getClassRoom(classRoom)),
+        //   //   ),
+        //   // )
+        // ],
         backgroundColor: Colors.black,
         title: Text(
           "Resources",
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () {
-          // return db.getClassRoom(classRoom);
-        },
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              buildListTileAdd(
-                  title: "Add a Classroom",
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: buildBottomSheet,
-                        isScrollControlled: true);
-                  }),
-              SizedBox(
-                height: 20,
+      body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            buildListTileAdd(
+                title: "Add a Classroom",
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: buildBottomSheet,
+                      isScrollControlled: true);
+                }),
+            SizedBox(
+              height: 20,
+            ),
+            TableCalendar(
+              onDaySelected: (date, events) {
+                _selectedEvents = events;
+              },
+              events: _events,
+              calendarController: calendarController,
+              headerStyle: HeaderStyle(
+                formatButtonShowsNext: false,
               ),
-              TableCalendar(
-                
-                onDaySelected: (date, events) {
-                  _selectedEvents = events;
-                },
-                events: _events,
-                calendarController: calendarController,
-                headerStyle: HeaderStyle(
-                  formatButtonShowsNext: false,
-                ),
-                startingDayOfWeek: StartingDayOfWeek.monday,
-              ),
-              Divider(
-                color: Colors.indigoAccent,
-                thickness: 10,
-                height: 50,
-              ),
-              ..._selectedEvents.map((event) => ListTile(
-                    title: Text(event),
-                  )),
-              // classRoom.classRooms.length == null
-              //     ? Center(
-              //         child: Text("No classes"),
-              //       )
-              //     : Flexible(
-              //         child: GridView.builder(
-              //             physics: NeverScrollableScrollPhysics(),
-              //             shrinkWrap: true,
-              //             itemCount: classRoom.classRooms.length,
-              //             gridDelegate:
-              //                 SliverGridDelegateWithFixedCrossAxisCount(
-              //                     crossAxisCount: 3),
-              //             itemBuilder: (conext, index) {
-              //               return InkWell(
-              //                 onTap: () {
-              //                   classRoom.currentClasRoom =
-              //                       classRoom.classRooms[index];
-              //                   Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                         builder: (context) => ClassRoomScreen()),
-              //                   );
-              //                 },
-              //                 child: Card(
-              //                   elevation: 3,
-              //                   child: GridTile(
-              //                     child: Center(
-              //                       child: Text(
-              //                           classRoom.classRooms[index].className,
-              //                           style: TextStyle(
-              //                               fontSize: 28,
-              //                               fontWeight: FontWeight.bold)),
-              //                     ),
-              //                     footer: Text(
-              //                         classRoom.classRooms[index].department,
-              //                         style: TextStyle(
-              //                             fontSize: 18,
-              //                             fontWeight: FontWeight.bold)),
-              //                   ),
-              //                 ),
-              //               );
-              //             }),
-              //       ),
-            ],
-          ),
+              startingDayOfWeek: StartingDayOfWeek.monday,
+            ),
+            Divider(
+              color: Colors.indigoAccent,
+              thickness: 10,
+              height: 50,
+            ),
+            ..._selectedEvents.map((event) => ListTile(
+                  title: Text(event),
+                )),
+            // classRoom.classRooms.length == null
+            //     ? Center(
+            //         child: Text("No classes"),
+            //       )
+            //     : Flexible(
+            //         child: GridView.builder(
+            //             physics: NeverScrollableScrollPhysics(),
+            //             shrinkWrap: true,
+            //             itemCount: classRoom.classRooms.length,
+            //             gridDelegate:
+            //                 SliverGridDelegateWithFixedCrossAxisCount(
+            //                     crossAxisCount: 3),
+            //             itemBuilder: (conext, index) {
+            //               return InkWell(
+            //                 onTap: () {
+            //                   classRoom.currentClasRoom =
+            //                       classRoom.classRooms[index];
+            //                   Navigator.push(
+            //                     context,
+            //                     MaterialPageRoute(
+            //                         builder: (context) => ClassRoomScreen()),
+            //                   );
+            //                 },
+            //                 child: Card(
+            //                   elevation: 3,
+            //                   child: GridTile(
+            //                     child: Center(
+            //                       child: Text(
+            //                           classRoom.classRooms[index].className,
+            //                           style: TextStyle(
+            //                               fontSize: 28,
+            //                               fontWeight: FontWeight.bold)),
+            //                     ),
+            //                     footer: Text(
+            //                         classRoom.classRooms[index].department,
+            //                         style: TextStyle(
+            //                             fontSize: 18,
+            //                             fontWeight: FontWeight.bold)),
+            //                   ),
+            //                 ),
+            //               );
+            //             }),
+            //       ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
