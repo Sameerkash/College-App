@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:kssem/Utilities/size_config.dart';
 import '../../Models/post.dart';
 import '../../Notifiers/profile_notifier.dart';
 import '../../Notifiers/timeline_notifier.dart';
@@ -370,7 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               Row(
                 children: <Widget>[
                   CircleAvatar(
-                    radius: 60,
+                    radius: SizeConfig.blockSizeHorizontal * 12,
                     backgroundImage: NetworkImage(photoUrl),
                     backgroundColor: Colors.blue,
                   ),
@@ -382,9 +383,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                       AutoSizeText(
                         // snapshot.data.name,
                         name,
+                        // "Tanzeela Fathima",
                         // "Sameer Kashayp",
                         maxFontSize: 23,
-                        minFontSize: 20,
+                        minFontSize: 18,
                         maxLines: 2,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black),
@@ -396,7 +398,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         branch,
                         // snapshot.data.branch,
                         // " 1KG17CS070",
-                        minFontSize: 23,
+                        minFontSize: 22,
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
@@ -409,7 +411,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               Text(
                 "Flutter developer| Deep learning |Game development developer| Deep Learning ",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: SizeConfig.blockSizeHorizontal * 5,
                     color: Colors.grey[800],
                     fontWeight: FontWeight.bold),
               ),
@@ -452,7 +454,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             ],
           ),
         ),
-        height: 300,
+        height: SizeConfig.blockSizeHorizontal * 73,
       ),
       elevation: 3.0,
     );

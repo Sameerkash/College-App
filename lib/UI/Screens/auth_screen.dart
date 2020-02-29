@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:kssem/Utilities/size_config.dart';
 import '../../Services/authentication.dart';
 import '../Widgets/platform_exceptoin_alert.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +9,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _devicesize = MediaQuery.of(context).size;
+    SizeConfig().init(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -19,19 +20,19 @@ class AuthScreen extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned(
-            left: _devicesize.width * 0.07,
-            top: _devicesize.width * 0.15,
+            left: SizeConfig.blockSizeHorizontal * 10,
+            top: SizeConfig.blockSizeVertical * 5,
             child: Container(
-              width: _devicesize.width * 0.85,
-              height: _devicesize.width * 0.85,
+              width: SizeConfig.blockSizeVertical * 40,
+              height: SizeConfig.blockSizeVertical * 40,
               child: Image.asset('assets/kssemlogo.png'),
             ),
           ),
           Positioned(
-            top: _devicesize.width * 1,
+            top: SizeConfig.blockSizeVertical * 42,
             child: Container(
               width: _devicesize.width,
-              height: _devicesize.height * 0.6,
+              height: SizeConfig.blockSizeVertical * 60,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.only(
@@ -47,13 +48,13 @@ class AuthScreen extends StatelessWidget {
                     padding: EdgeInsets.all(30),
                     child: buildText(
                       text: "KSSEM Connect",
-                      size: 35,
+                      size: SizeConfig.blockSizeVertical * 4,
                       color: Colors.grey[900],
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(
-                    height: _devicesize.height * 0.04,
+                    height: SizeConfig.blockSizeVertical * 2,
                   ),
                   buildGoogleWidget(onTap: () {
                     _signInWithGoogle(context);
@@ -63,11 +64,11 @@ class AuthScreen extends StatelessWidget {
                   ),
                   buildText(
                     text: "Sign in with Google",
-                    size: 20,
+                    size: SizeConfig.blockSizeVertical * 3,
                     color: Colors.grey[800],
                   ),
                   SizedBox(
-                    height: _devicesize.height * 0.1,
+                    height: SizeConfig.blockSizeVertical * 8,
                   ),
                   buildText(
                       text: "desinged by Sameer",
@@ -89,17 +90,14 @@ class AuthScreen extends StatelessWidget {
       Color color,
       FontStyle style,
       FontWeight fontWeight}) {
-    return Text(
-      text,
-      style: GoogleFonts.roboto(
-          textStyle: TextStyle(
-              decoration: TextDecoration.none,
-              fontSize: size,
-              color: color,
-              fontWeight: fontWeight,
-              // fontFamily: fontFamily,
-              fontStyle: style)),
-    );
+    return Text(text,
+        style: TextStyle(
+            decoration: TextDecoration.none,
+            fontSize: size,
+            color: color,
+            fontWeight: fontWeight,
+            // fontFamily: fontFamily,
+            fontStyle: style));
   }
 
   buildGoogleWidget({Function onTap}) {
@@ -109,8 +107,8 @@ class AuthScreen extends StatelessWidget {
         child: InkWell(
           splashColor: Colors.indigo, // inkwell color
           child: Container(
-            height: 100,
-            width: 100,
+            height: SizeConfig.blockSizeVertical * 15,
+            width: SizeConfig.blockSizeVertical * 15,
             child: FittedBox(
               fit: BoxFit.cover,
               child: Image.asset('assets/google.gif'),

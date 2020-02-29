@@ -7,6 +7,7 @@ import 'package:kssem/Services/database.dart';
 import 'package:kssem/UI/Screens/timeline_form.dart';
 import 'package:kssem/UI/Widgets/platform_alert_dialog.dart';
 import 'package:kssem/UI/Widgets/progress_bars.dart';
+import 'package:kssem/Utilities/size_config.dart';
 import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 
@@ -172,8 +173,8 @@ class _NotificationScreenState extends State<NotificationScreen>
                             );
                     }),
                 Positioned(
-                  top: 650,
-                  left: 350,
+                  top: SizeConfig.blockSizeVertical * 68,
+                  left: SizeConfig.blockSizeHorizontal * 78,
                   child: FloatingActionButton(
                     child: Icon(
                       Icons.notifications_active,
@@ -194,8 +195,8 @@ class _NotificationScreenState extends State<NotificationScreen>
                   ),
                 ),
                 Positioned(
-                  top: 580,
-                  left: 350,
+                   top: SizeConfig.blockSizeVertical * 58,
+                  left: SizeConfig.blockSizeHorizontal * 78,
                   child: FloatingActionButton(
                     child: Icon(Icons.notifications),
                     backgroundColor: Colors.black,

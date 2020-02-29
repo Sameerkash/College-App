@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+// import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:kssem/Utilities/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum Options {
@@ -43,13 +44,15 @@ buildFeedCard(BuildContext context,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        buildHeader(devicesize, name: name, photoUrl: photoUrl),
+        buildHeader(devicesize,
+            name: name, photoUrl: photoUrl, context: context),
         buildContent(content: content, title: title, imageUrl: imageUrl),
         buildFooter(devicesize,
             timestamp: timestamp,
             onLiked: onLiked,
             isLiked: isLiked,
-            likeCount: likeCount)
+            likeCount: likeCount,
+            context: context)
       ],
     ),
   );
@@ -86,7 +89,7 @@ Flexible buildContent({String content, String title, String imageUrl}) {
                 )
               : Container(
                   color: Colors.grey[200],
-                  height: 500,
+                  height: SizeConfig.blockSizeVertical * 70,
                   width: 400,
                   child: Image.network(
                     imageUrl,
@@ -122,7 +125,8 @@ Flexible buildContent({String content, String title, String imageUrl}) {
 }
 
 Container buildHeader(MediaQueryData devicesize,
-    {Widget options, String name, String photoUrl}) {
+    {Widget options, String name, String photoUrl, BuildContext context}) {
+  SizeConfig().init(context);
   return Container(
     decoration: BoxDecoration(
         shape: BoxShape.rectangle,
@@ -158,7 +162,9 @@ Container buildHeader(MediaQueryData devicesize,
                   name,
                   // "name "
                   // "Sameer Kashayp",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -174,7 +180,8 @@ Container buildProfileHeader(MediaQueryData devicesize,
     String name,
     String photoUrl,
     Function onPressedEdit,
-    Function onPressedDelete}) {
+    Function onPressedDelete,
+    BuildContext context}) {
   return Container(
     decoration: BoxDecoration(
         shape: BoxShape.rectangle,
@@ -188,7 +195,7 @@ Container buildProfileHeader(MediaQueryData devicesize,
               backgroundColor: Colors.blue[900],
             )),
         SizedBox(
-          width: 15,
+          width: SizeConfig.blockSizeHorizontal * 3,
         ),
         Padding(
           padding: EdgeInsets.only(top: 10, right: 40),
@@ -220,6 +227,7 @@ Container buildProfileHeader(MediaQueryData devicesize,
 
 Container buildFooter(
   MediaQueryData devicesize, {
+  BuildContext context,
   String timestamp,
   int likeCount,
   Function onLiked,
@@ -236,12 +244,13 @@ Container buildFooter(
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(
-            left: 10,
+            left: SizeConfig.blockSizeHorizontal * 1,
           ),
           child: Material(
             borderRadius: BorderRadius.circular(25),
             borderOnForeground: true,
             child: IconButton(
+              iconSize: SizeConfig.blockSizeHorizontal * 6,
               enableFeedback: true,
               splashColor: Colors.red,
               onPressed: onLiked,
@@ -252,26 +261,28 @@ Container buildFooter(
             ),
           ),
         ),
+        SizedBox(
+          width: SizeConfig.blockSizeHorizontal * 2,
+        ),
         Text(
           likeCount.toString(),
+          // "1000",
           style: TextStyle(color: Colors.black87),
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 15, bottom: 15, left: 15),
-          child: Material(
-            shadowColor: Colors.white,
-            borderOnForeground: true,
-            borderRadius: BorderRadius.circular(25),
-            child: IconButton(
-              splashColor: Colors.black,
-              icon: Icon(FontAwesome.share_square_o),
-              onPressed: () {},
-            ),
-          ),
-        ),
-        SizedBox(
-          width: devicesize.size.width * .19,
-        ),
+        // Padding(
+        //   padding: EdgeInsets.only(top: 15, bottom: 15, left: 15),
+        //   child: Material(
+        //     shadowColor: Colors.white,
+        //     borderOnForeground: true,
+        //     borderRadius: BorderRadius.circular(25),
+        //     child: IconButton(
+        //       splashColor: Colors.black,
+        //       icon: Icon(FontAwesome.share_square_o),
+        //       onPressed: () {},
+        //     ),
+        //   ),
+        // ),
+        SizedBox(width: SizeConfig.screenWidth * .19),
         Padding(
           padding: EdgeInsets.all(7),
           child: Text(timestamp
@@ -344,6 +355,7 @@ buildProfileFeedCard(BuildContext context,
   var devicesize = MediaQuery.of(context);
 
   return Container(
+    // padding: const EdgeInsets.only(left: 8, right: 8),
     decoration: BoxDecoration(
       //  borderRadius: BorderRadius.all(Radius.circular(10)),
       boxShadow: [
@@ -370,7 +382,8 @@ buildProfileFeedCard(BuildContext context,
             name: name,
             photoUrl: photoUrl,
             onPressedDelete: onPressedDelete,
-            onPressedEdit: onPressedEdit),
+            onPressedEdit: onPressedEdit,
+            context: context),
         buildContent(content: content, title: title, imageUrl: imageUrl),
         buildFooter(
           devicesize,
