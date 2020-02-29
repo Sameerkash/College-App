@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:kssem/Models/notification.dart';
 import 'package:path/path.dart' as path;
 import '../Models/post.dart';
 import '../Models/faculty.dart';
@@ -36,6 +37,17 @@ abstract class Database {
       File localFile,
       bool isImageUpdated,
       bool isImageRemoved});
+  setNotificationImage({
+    Notifications notification,
+    File localFile,
+    bool isCollegeNotify,
+    bool isDetNotify,
+    String currentdepartment,
+  });
+  deleteNotification(
+    Notifications currentNotification,
+    String currentdepartment,
+  );
   // addclassRoom(ClassRoom classRoom);
   // getClassRoom(ClassRoomNotifier classRooms);
   // getClassStudents(ClassRoom classRoom, ClassRoomNotifier classRoomNotify);
@@ -89,10 +101,9 @@ class FirestoreDatabase implements Database {
       _posts.add(pos);
     });
     if (snapshot.documents.length < 10) {
-    
       hasMorePosts = false;
     }
-   
+
     if (snapshot.documents.length == 0) {
       return;
     } else {
@@ -108,7 +119,6 @@ class FirestoreDatabase implements Database {
     }
 
     if (!hasMorePosts) {
-      
       return;
     }
 
@@ -163,9 +173,7 @@ class FirestoreDatabase implements Database {
       bool isImageUpdated,
       bool isImageRemoved}) async {
     if (localFile != null) {
-     
       var fileExtension = path.extension(localFile.path);
-    
 
       var uuid = Uuid().v4();
 
@@ -182,7 +190,6 @@ class FirestoreDatabase implements Database {
       });
 
       String url = await firebaseStorageRef.getDownloadURL();
-     
 
       setPost(isUpdating,
           updatePost: updatePost,
@@ -216,7 +223,6 @@ class FirestoreDatabase implements Database {
       updatePost.updatedAt = Timestamp.now();
 
       var deleteUrl = updatePost.imageUrl;
-     
 
       if (isImageRemoved == true && deleteUrl != null) {
         // print("IMAGEDeleted called");
@@ -337,10 +343,9 @@ class FirestoreDatabase implements Database {
       StorageReference storageReference =
           await FirebaseStorage.instance.getReferenceFromUrl(post.imageUrl);
 
-      print(storageReference.path);
+      // print(storageReference.path);
 
       await storageReference.delete();
-
     }
     final profileref = Firestore.instance.collection('posts/$uid/userPosts');
     final timelineref = Firestore.instance.collection('timeline');
@@ -410,6 +415,159 @@ class FirestoreDatabase implements Database {
     return snapshot;
   }
 
+// Notification database methods
+
+  setNotificationImage({
+    Notifications notification,
+    File localFile,
+    bool isCollegeNotify,
+    bool isDetNotify,
+    String currentdepartment,
+  }) async {
+    if (localFile != null) {
+      var fileExtension = path.extension(localFile.path);
+
+      var uuid = Uuid().v4();
+
+      final StorageReference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
+          .child('notifications/images/$uuid$fileExtension');
+
+      await firebaseStorageRef
+          .putFile(localFile)
+          .onComplete
+          .catchError((onError) {
+        print(onError);
+        return false;
+      });
+
+      String url = await firebaseStorageRef.getDownloadURL();
+      setNotification(notification,
+          isCollegeNotify: isCollegeNotify,
+          isDetNotify: isDetNotify,
+          url: url,
+          currentdepartment: currentdepartment);
+    } else {
+      setNotification(notification,
+          isCollegeNotify: isCollegeNotify,
+          isDetNotify: isDetNotify,
+          currentdepartment: currentdepartment);
+    }
+  }
+
+  setNotification(Notifications notification,
+      {bool isCollegeNotify,
+      bool isDetNotify,
+      String currentdepartment,
+      String url}) async {
+    if (url != null) {
+      notification.imageUrl = url;
+    }
+
+    var nid = Uuid().v4();
+    notification.nid = nid;
+    notification.createdAt = Timestamp.now();
+    notification.department = currentdepartment;
+
+    if (isDetNotify == true && isCollegeNotify == false) {
+      final departmentref = Firestore.instance
+          .collection('departments')
+          .document('$currentdepartment')
+          .collection('notifications');
+
+      departmentref.document('$nid').setData(notification.toMap());
+    } else if (isCollegeNotify == true && isDetNotify == false) {
+      final ref = Firestore.instance;
+
+      ref
+          .collection('departments')
+          .document('CSE')
+          .collection('notifications')
+          .document('$nid')
+          .setData(notification.toMap());
+      ref
+          .collection('departments')
+          .document('ECE')
+          .collection('notifications')
+          .document('$nid')
+          .setData(notification.toMap());
+      ref
+          .collection('departments')
+          .document('CIV')
+          .collection('notifications')
+          .document('$nid')
+          .setData(notification.toMap());
+      ref
+          .collection('departments')
+          .document('MECH')
+          .collection('notifications')
+          .document('$nid')
+          .setData(notification.toMap());
+      ref
+          .collection('departments')
+          .document('EEE')
+          .collection('notifications')
+          .document('$nid')
+          .setData(notification.toMap());
+    }
+  }
+
+  deleteNotification(
+    Notifications currentNotification,
+    String currentdepartment,
+  ) async {
+    if (currentNotification.imageUrl != null) {
+      StorageReference storageReference = await FirebaseStorage.instance
+          .getReferenceFromUrl(currentNotification.imageUrl);
+
+      // print(storageReference.path);
+
+      await storageReference.delete();
+    }
+    if (currentNotification.isCollegeNotification) {
+      final ref = Firestore.instance;
+
+      ref
+          .collection('departments')
+          .document('CSE')
+          .collection('notifications')
+          .document(currentNotification.nid)
+          .delete();
+      ref
+          .collection('departments')
+          .document('ECE')
+          .collection('notifications')
+          .document(currentNotification.nid)
+          .delete();
+      ref
+          .collection('departments')
+          .document('CIV')
+          .collection('notifications')
+          .document(currentNotification.nid)
+          .delete();
+      ref
+          .collection('departments')
+          .document('MECH')
+          .collection('notifications')
+          .document(currentNotification.nid)
+          .delete();
+      ref
+          .collection('departments')
+          .document('EEE')
+          .collection('notifications')
+          .document(currentNotification.nid)
+          .delete();
+    }
+    final profileref = Firestore.instance
+        .collection('departments/$currentdepartment/notifications');
+    // final timelineref = Firestore.instance.collection('timeline');
+
+    await profileref.document(currentNotification.nid).delete();
+    // await timelineref.document(cure.postId).delete();
+    // postDeleted();
+  }
+
+// Notification ends
   // This marks the end of the methods for the forum
 
   // The following methods below are used to the deal with the CRUD operations for the Academic Screen Where Teachers will

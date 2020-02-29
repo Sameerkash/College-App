@@ -11,7 +11,7 @@ class ProfileNotifier with ChangeNotifier {
 
   UnmodifiableListView<Post> get posts => UnmodifiableListView(_post);
   Post get currentPost => _currentPost;
-  Faculty get student => _faculty;
+  Faculty get currentFaculty => _faculty;
 
   set setFacultyProfile(Faculty faculty) {
     _faculty = faculty;

@@ -148,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
         ],
       ),
-      body: posts.student == null
+      body: posts.currentFaculty == null
           ? Center(
               child: ColorLoader3(
                 radius: 16,
@@ -173,9 +173,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       buildCard(devicesize,
-                          photoUrl: posts.student.photoUrl,
-                          name: posts.student.displayName ?? "name",
-                          branch: posts.student.department, onEdit: () {
+                          photoUrl: posts.currentFaculty.photoUrl,
+                          name: posts.currentFaculty.displayName ?? "name",
+                          branch: posts.currentFaculty.department, onEdit: () {
                         showModalBottomSheet(
                           isScrollControlled: true,
                           context: context,

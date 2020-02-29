@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:kssem/UI/Screens/discover_kssem_screen.dart';
 import '../Screens/feed_screen.dart';
 import '../Screens/notification_screen.dart';
 import '../Screens/profile_screen.dart';
@@ -46,29 +47,27 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: 
-      // IndexedStack(
-      //   index: pageIndex,
-      //   children: <Widget>[
-      //     FeedScreen(),
-      //     NotificationScreen(),
-      //     ResourceScreen(),
-      //     ProfileScreen(),
-      //   ],
-      // ),
-      PageView(
+      body:
+          // IndexedStack(
+          //   index: pageIndex,
+          //   children: <Widget>[
+          //     FeedScreen(),
+          //     NotificationScreen(),
+          //     ResourceScreen(),
+          //     ProfileScreen(),
+          //   ],
+          // ),
+          PageView(
         controller: pageController,
         physics: NeverScrollableScrollPhysics(),
         onPageChanged: onPageChanged,
         children: <Widget>[
           FeedScreen(),
           NotificationScreen(),
-          ResourceScreen(),
+          DiscoverKssemScreen(),
+          // ResourceScreen(),
           ProfileScreen(),
         ],
-
-
-
       ),
       bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,

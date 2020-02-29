@@ -69,24 +69,27 @@ class _SearchScreenState extends State<SearchScreen> {
                     : buildListTile(
                         searchNotifier.users[index].photoUrl,
                         searchNotifier.users[index].displayName,
-                        searchNotifier.users[index].branch, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserProfile(
-                              searchNotifier.users[index],
+                        searchNotifier.users[index].branch,
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserProfile(
+                                searchNotifier.users[index],
+                              ),
                             ),
-                          ),
-                        );
-                      });
+                          );
+                        },
+                        searchNotifier.users[index].department,
+                      );
               },
               itemCount: searchNotifier.users.length,
             ),
     );
   }
 
-  buildListTile(
-      String photoUrl, String displayName, String branch, Function onTap) {
+  buildListTile(String photoUrl, String displayName, String branch,
+      Function onTap, String dept) {
     return displayName == null
         ? Container(height: 0)
         : Column(children: [
@@ -98,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 displayName,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(branch),
+              subtitle: branch == null ? Text(dept) : Text(branch),
               trailing: Icon(Icons.arrow_forward_ios),
               onTap: onTap,
             ),

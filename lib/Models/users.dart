@@ -67,6 +67,7 @@ class Users {
     final String uid = data['uid'];
     final String name = data['name'];
     final String displayName = data['displayName'];
+    final String branch = data['branch'];
     // final String usn = data['usn'];
     final String email = data['email'];
     final String phone = data['phone'];
@@ -82,6 +83,7 @@ class Users {
       displayName: displayName,
       phone: phone,
       email: email,
+       branch: branch,
       department: department,
       photoUrl: photoUrl,
       designation: designation,
@@ -99,6 +101,7 @@ class Users {
       'phone': phone ?? '',
       'email': email ?? '',
       'branch': branch ?? '',
+      'department': department,
       'degree': degree ?? '',
       'photoUrl': photoUrl ?? '',
       'links': links ?? '',

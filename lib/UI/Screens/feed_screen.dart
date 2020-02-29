@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:kssem/Notifiers/profile_notifier.dart';
 import '../../Models/post.dart';
 import '../../Notifiers/search_notifier.dart';
 import '../../Notifiers/timeline_notifier.dart';
@@ -27,8 +28,11 @@ class _FeedScreenState extends State<FeedScreen>
   void initState() {
     TimelineNotifer timelinePosts =
         Provider.of<TimelineNotifer>(context, listen: false);
+    ProfileNotifier profile =
+        Provider.of<ProfileNotifier>(context, listen: false);
     final db = Provider.of<Database>(context, listen: false);
     db.getTimeline(timelinePosts);
+    db.getFacultyProfile(profile);
 
     _scrollController.addListener(() {
       double maxScroll = _scrollController.position.maxScrollExtent;
@@ -191,6 +195,8 @@ class _FeedScreenState extends State<FeedScreen>
               MaterialPageRoute(
                 builder: (context) => TimelineForm(
                   isUpdating: false,
+                  isCollegeNotification: false,
+                  isDepartmentnotification: false,
                 ),
               ),
             );

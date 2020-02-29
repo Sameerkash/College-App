@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:kssem/Notifiers/notification_notifier.dart';
 import '../../Models/post.dart';
 import '../../Models/users.dart';
 import '../../Services/database.dart';
@@ -74,6 +75,7 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
+    
     var deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -92,7 +94,8 @@ class _UserProfileState extends State<UserProfile> {
               buildCard(deviceSize,
                   photoUrl: widget.user.photoUrl,
                   name: widget.user.displayName,
-                  branch: widget.user.branch),
+                  branch: widget.user.branch,
+                  dept: widget.user.department),
               FutureBuilder(
                   future: getUserProfile(context),
                   builder: (context, snapshot) {
@@ -125,6 +128,7 @@ class _UserProfileState extends State<UserProfile> {
                           return buildFeedCard(context, onLiked: () {
                             handleLikePost(_posts[index]);
                           },
+                              imageUrl: _posts[index].imageUrl,
                               isLiked: isLiked,
                               likeCount: getLikeCount(_posts[index]),
                               photoUrl: _posts[index].photoUrl,
@@ -153,7 +157,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Card buildCard(Size devicesize,
-      {String name, String photoUrl, String branch}) {
+      {String name, String photoUrl, String branch, String dept}) {
     return Card(
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
       child: Container(
@@ -187,13 +191,21 @@ class _UserProfileState extends State<UserProfile> {
                       SizedBox(
                         height: devicesize.height * .019,
                       ),
-                      AutoSizeText(
-                        branch,
-                        // snapshot.data.branch,
-                        // " 1KG17CS070",
-                        minFontSize: 23,
-                        style: TextStyle(color: Colors.black),
-                      ),
+                      branch == null
+                          ? AutoSizeText(
+                              dept,
+                              // snapshot.data.branch,
+                              // " 1KG17CS070",
+                              minFontSize: 23,
+                              style: TextStyle(color: Colors.black),
+                            )
+                          : AutoSizeText(
+                              branch,
+                              // snapshot.data.branch,
+                              // " 1KG17CS070",
+                              minFontSize: 23,
+                              style: TextStyle(color: Colors.black),
+                            ),
                     ],
                   ),
                 ],

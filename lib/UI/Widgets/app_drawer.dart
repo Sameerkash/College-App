@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import '../../Notifiers/theme_changer.dart';
 // import 'package:provider/provider.dart';
 // import 'package:kssem/Services/authentication.dart';
@@ -55,17 +56,17 @@ class AppDrawer extends StatelessWidget {
                 height: 30,
               ),
               buildListTile(
-                title: "Library",
+                title: "Arohana",
                 subtitle: "Coming Soon",
-                icon: MaterialCommunityIcons.book,
+                icon: MaterialCommunityIcons.heart_pulse,
               ),
-              SizedBox(
-                height: 5,
-              ),
-              buildListTile(
-                  title: "Discover KSSEM",
-                  subtitle: "Coming Soon",
-                  icon: Octicons.globe),
+              // SizedBox(
+              //   height: 5,
+              // ),
+              // buildListTile(
+              //     title: "Discover KSSEM",
+              //     subtitle: "Coming Soon",
+              //     icon: Octicons.globe),
               SizedBox(
                 height: 300,
               ),
@@ -80,7 +81,16 @@ class AppDrawer extends StatelessWidget {
               //   },
               // ),
               buildListTile(
-                  // onTap: () {
+                  onTap: () async {
+                    String subject = "KSSEM App Bug Report";
+                    String uri =
+                        'mailto:sameera.s.kashyap@gmail.com?subject=${Uri.encodeComponent(subject)}';
+                    if (await canLaunch(uri)) {
+                      await launch(uri);
+                    } else {
+                      print('Could not launch $uri');
+                    }
+                  },
                   //   SchedulerBinding.instance.addPostFrameCallback((_) {
                   //     // close the app drawer
                   //     Navigator.of(context).pop();
@@ -91,9 +101,9 @@ class AppDrawer extends StatelessWidget {
                   // Navigator.pop(context);
                   // Navigator.of(context).pop();
 
-                  title: "Logout",
-                  subtitle: "Sign out from the app",
-                  icon: Icons.exit_to_app)
+                  title: "Feedback",
+                  subtitle: "Contact the Developer",
+                  icon: Icons.mail)
             ],
           ),
         ),

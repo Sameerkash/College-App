@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kssem/Models/notification.dart';
 import 'package:kssem/Notifiers/classroom.dart';
+import 'package:kssem/Notifiers/notification_notifier.dart';
 import 'package:kssem/Notifiers/profile_notifier.dart';
 import 'package:kssem/Notifiers/search_notifier.dart';
 // import 'package:kssem/Notifiers/theme_changer.dart';
@@ -45,8 +47,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SearchNotifier>(
           create: (context) => SearchNotifier(),
         ),
-        // ChangeNotifierProvider<ClassRoomNotifier>(
-        //   create: (context) => ClassRoomNotifier(),
+        // ChangeNotifierProvider<NotificationNotifier>(
+        //   create: (context) => NotificationNotifier(),
         // )
         // ChangeNotifierProvider<ThemeChanger>(
         //   create: (_) => ThemeChanger(

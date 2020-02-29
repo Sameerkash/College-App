@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kssem/Models/notification.dart';
 import 'package:kssem/Notifiers/profile_notifier.dart';
 import 'package:kssem/Notifiers/timeline_notifier.dart';
 import '../../Models/post.dart';
@@ -13,8 +14,17 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 class TimelineForm extends StatefulWidget {
-  TimelineForm({Key key, this.isUpdating}) : super(key: key);
+  TimelineForm({
+    Key key,
+    this.isUpdating,
+    this.isCollegeNotification,
+    this.isDepartmentnotification,
+    this.selectedDept,
+  }) : super(key: key);
   final bool isUpdating;
+  final bool isDepartmentnotification;
+  final bool isCollegeNotification;
+  final String selectedDept;
 
   @override
   _TimelineFormState createState() => _TimelineFormState();
@@ -101,6 +111,10 @@ class _TimelineFormState extends State<TimelineForm>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        title: widget.isDepartmentnotification &&
+                widget.isCollegeNotification == false
+            ? Text("Sending to Department")
+            : Text("Sending to College"),
         // actions: <Widget>[
         //   IconButton(
         //       icon: Icon(MaterialCommunityIcons.image),
@@ -133,35 +147,40 @@ class _TimelineFormState extends State<TimelineForm>
                       key: _formKey,
                       child: Column(
                         children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      style: BorderStyle.solid,
-                                      color: Colors.red,
-                                      width: 2),
+                          (widget.isDepartmentnotification == true ||
+                                  widget.isCollegeNotification == true)
+                              ? Container(
+                                  height: 0,
+                                )
+                              : Container(
+                                  padding: EdgeInsets.all(5),
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            style: BorderStyle.solid,
+                                            color: Colors.red,
+                                            width: 2),
+                                      ),
+                                      hintText: "Title",
+                                      hintStyle: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value.length > 25) {
+                                        return "Title should be less than 25 characters";
+                                      } else if (value.isEmpty) {
+                                        return "Title cannot be empty";
+                                      } else
+                                        return null;
+                                    },
+                                    onSaved: (value) {
+                                      _title = value;
+                                    },
+                                    maxLines: 2,
+                                  ),
                                 ),
-                                hintText: "Title",
-                                hintStyle: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value.length > 25) {
-                                  return "Title should be less than 25 characters";
-                                } else if (value.isEmpty) {
-                                  return "Title cannot be empty";
-                                } else
-                                  return null;
-                              },
-                              onSaved: (value) {
-                                _title = value;
-                              },
-                              maxLines: 2,
-                            ),
-                          ),
                           Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: _imageFile == null
@@ -180,24 +199,46 @@ class _TimelineFormState extends State<TimelineForm>
                                   )
                                 : _showImage(),
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "What's on your mind?",
-                              hintStyle: TextStyle(fontSize: 25),
-                            ),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return "Content canot be empty";
-                              } else
-                                return null;
-                            },
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            onSaved: (value) {
-                              _content = value;
-                            },
-                          ),
+                          (widget.isDepartmentnotification ||
+                                  widget.isCollegeNotification)
+                              ? TextFormField(
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Enter the notification",
+                                    hintStyle: TextStyle(fontSize: 25),
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "Content canot be empty";
+                                    } else if (value.length > 350) {
+                                      return "Should be less than 350 characters";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  onSaved: (value) {
+                                    _content = value;
+                                  },
+                                )
+                              : TextFormField(
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "What's on your mind?",
+                                    hintStyle: TextStyle(fontSize: 25),
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "Content canot be empty";
+                                    } else
+                                      return null;
+                                  },
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  onSaved: (value) {
+                                    _content = value;
+                                  },
+                                ),
                         ],
                       ),
                     ),
@@ -234,35 +275,68 @@ class _TimelineFormState extends State<TimelineForm>
 
   Future<void> _submit(BuildContext context) async {
     final db = Provider.of<Database>(context, listen: false);
+    final faculty = Provider.of<ProfileNotifier>(context, listen: false);
     if (_validateAndSaveForm()) {
       try {
         // String dateTime = DateTime.now().toIso8601String();
         // Timestamp timeStamp = Timestamp.now();
-        Post post = Post(
+        Notifications notifiy = Notifications(
           uid: db.userId,
-          userName: db.displayName,
-          photoUrl: db.photoUrl,
-          title: _title,
+          facultyName: db.displayName,
           content: _content,
+          storedDepartment: faculty.currentFaculty.department,
+          isCollegeNotification:widget.isCollegeNotification
+          // department: widget.selectedDept
         );
         setState(() {
           _isLoading = true;
         });
-        // await db.setTimeline(post, widget.isUpdating);
-        await db.setPostImage(
-          widget.isUpdating,
-          post: post,
-          localFile: _imageFile,
-        );
-        setState(() {
-          _isLoading = false;
-        });
-        TimelineNotifer timelinePosts =
-            Provider.of<TimelineNotifer>(context, listen: false);
-        db.getTimeline(timelinePosts);
-        ProfileNotifier posts =
-            Provider.of<ProfileNotifier>(context, listen: false);
-        db.getPosts(posts);
+        if (widget.isDepartmentnotification == true &&
+            widget.isCollegeNotification == false) {
+          // print(widget.selectedDept);
+
+          await db.setNotificationImage(
+              localFile: _imageFile,
+              notification: notifiy,
+              currentdepartment: widget.selectedDept,
+              isCollegeNotify: widget.isCollegeNotification,
+              isDetNotify: widget.isDepartmentnotification);
+        } else if (widget.isDepartmentnotification == false &&
+            widget.isCollegeNotification == true) {
+          await db.setNotificationImage(
+
+              localFile: _imageFile,
+              notification: notifiy,
+              currentdepartment: widget.selectedDept,
+              isCollegeNotify: widget.isCollegeNotification,
+              isDetNotify: widget.isDepartmentnotification);
+        } else {
+          Post post = Post(
+            uid: db.userId,
+            userName: db.displayName,
+            photoUrl: db.photoUrl,
+            title: _title,
+            content: _content,
+          );
+          // setState(() {
+          //   _isLoading = true;
+          // });
+          // await db.setTimeline(post, widget.isUpdating);
+          await db.setPostImage(
+            widget.isUpdating,
+            post: post,
+            localFile: _imageFile,
+          );
+          setState(() {
+            _isLoading = false;
+          });
+          TimelineNotifer timelinePosts =
+              Provider.of<TimelineNotifer>(context, listen: false);
+          db.getTimeline(timelinePosts);
+          ProfileNotifier posts =
+              Provider.of<ProfileNotifier>(context, listen: false);
+          db.getPosts(posts);
+        }
         Navigator.pop(context);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
