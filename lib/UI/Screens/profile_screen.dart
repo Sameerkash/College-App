@@ -316,7 +316,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     _description = val;
                   },
                   validator: (val) {
-                    if (val.length < 75 || val.isEmpty) {
+                    if (val.length < 150 || val.isEmpty) {
                       return null;
                     }
                     return "Should be < 75 characters";

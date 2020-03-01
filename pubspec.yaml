@@ -34,7 +34,7 @@ dependencies:
   google_sign_in: ^4.1.1
   flutter_vector_icons: ^0.2.1
   # cached_network_image: ^2.0.0
-  google_fonts: ^0.3.2
+  # google_fonts: ^0.3.2
   auto_size_text: ^2.1.0
   uuid: ^2.0.4
   async: ^2.4.0
@@ -43,6 +43,7 @@ dependencies:
   image_picker: ^0.6.3+1
   flutter_linkify: ^3.1.0
   url_launcher: ^5.4.1
+  firebase_messaging: ^6.0.9
 
 
 
