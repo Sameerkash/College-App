@@ -49,11 +49,7 @@ abstract class Database {
     String currentdepartment,
   );
   updateProfileLinks(Faculty faculty, ProfileLinks links);
-  // addclassRoom(ClassRoom classRoom);
-  // getClassRoom(ClassRoomNotifier classRooms);
-  // getClassStudents(ClassRoom classRoom, ClassRoomNotifier classRoomNotify);
-  // addStudentstoClass(ClassRoom classRoom, List<Student> selectedStudents);
-  // getSelectedClassStudents(ClassRoomNotifier classRoomNotify);
+  setFCMtoken(var fcmToken);
   get userId;
   // get dateTime;
   get timestamp;
@@ -78,6 +74,14 @@ class FirestoreDatabase implements Database {
 // The following methods up until getUserProfilePosts is used for handling all the database CRUD operatiojns for the forum of the app
 // where users can upload a  post, edit a post, like a post and delete a post, they can also search for each user individually
 // and go to their profile to see thier posts and like or unlike those posts along with data pagination.
+
+  setFCMtoken(var fcmToken) async {
+    var tokens = Firestore.instance.collection('faculty').document(uid);
+
+    await tokens.updateData({
+      'token': fcmToken,
+    });
+  }
 
   @override
   Future<void> setFaculty(Faculty faculty) async => await _service.setData(
@@ -461,11 +465,13 @@ class FirestoreDatabase implements Database {
       bool isDetNotify,
       String currentdepartment,
       String url}) async {
+    notification.imageUrl = "";
     if (url != null) {
       notification.imageUrl = url;
     }
 
     var nid = Uuid().v4();
+
     notification.nid = nid;
     notification.createdAt = Timestamp.now();
     notification.department = currentdepartment;

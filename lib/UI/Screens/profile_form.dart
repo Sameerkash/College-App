@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../Models/faculty.dart';
 import '../../Services/authentication.dart';
 import '../../Services/database.dart';
@@ -90,12 +89,13 @@ class _ProfileFormState extends State<ProfileForm> {
                       }
                     }, (value) => _name = value, Icons.person),
                     buildTextFormField("Faculty ID", (value) {
-                      if ( value.length > 0) {
+                      if (value.length > 0) {
                         return null;
                       } else {
                         return "Enter a valid facultyId";
                       }
-                    }, (value) => _facultyId = value, Icons.confirmation_number),
+                    }, (value) => _facultyId = value,
+                        Icons.confirmation_number),
                     buildTextFormField("Phone", (value) {
                       if (value.length == 10) {
                         return null;
@@ -110,7 +110,8 @@ class _ProfileFormState extends State<ProfileForm> {
                         return "Enter valid email ";
                       }
                     }, (value) => _email = value, Icons.mail),
-                    buildTextFormField("Department(CSE,ECE,EEE,ME,CIV)", (value) {
+                    buildTextFormField("Department(CSE,ECE,EEE,ME,CIV)",
+                        (value) {
                       // Pattern pattern = r"/[CSE\,ECE\,EEE\,ME\,CIV]/";
                       // RegExp regex = new RegExp(pattern);
 
@@ -127,7 +128,8 @@ class _ProfileFormState extends State<ProfileForm> {
                     }, (value) => _department = value,
                         MaterialCommunityIcons.alphabetical),
                     buildTextFormField("Designation", (value) {
-                      if (value.contains("Asst.")||value.contains("Associate")) {
+                      if (value.contains("Asst.") ||
+                          value.contains("Associate")) {
                         return null;
                       } else {
                         return "Enter a valid designation";
@@ -159,10 +161,8 @@ class _ProfileFormState extends State<ProfileForm> {
             filled: true,
             fillColor: Colors.white,
             hintText: hintText,
-            hintStyle: GoogleFonts.aleo(
-              textStyle: TextStyle(
-                color: Colors.black,
-              ),
+            hintStyle: TextStyle(
+              color: Colors.black,
             ),
             errorStyle: TextStyle(
               color: Colors.white,

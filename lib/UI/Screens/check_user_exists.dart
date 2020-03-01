@@ -1,6 +1,10 @@
 import 'package:async/async.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
 import 'package:kssem/Services/database.dart';
+import 'package:kssem/UI/Screens/notification_screen.dart';
 import '../Screens/home_screen.dart';
 
 import '../Screens/profile_form.dart';
@@ -17,6 +21,68 @@ class CheckUserExists extends StatefulWidget {
 class _CheckUserExistsState extends State<CheckUserExists> {
   final AsyncMemoizer _memoizer = AsyncMemoizer();
 
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
+  _setMessage(Map<String, dynamic> message) {
+    final notification = message['notification'];
+    final data = message['data'];
+    final String title = notification['title'];
+    final String body = notification['body'];
+    String mMessage = data['message'];
+    print("Title: $title, body: $body, message: $mMessage");
+  }
+
+  @override
+  void initState() {
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        // print("onMessage: $message");
+        _setMessage(message);
+        // showDialog(
+        //   context: context,
+        //   builder: (context) => AlertDialog(
+        //     content: ListTile(
+        //       title: Text(message['notification']['title']),
+        //       subtitle: Text(message['notification']['body']),
+        //     ),
+        //     actions: <Widget>[
+        //       FlatButton(
+        //         child: Text('Ok'),
+        //         onPressed: () => Navigator.of(context).pop(),
+        //       ),
+        //     ],
+        //   ),
+        // );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        _setMessage(message);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NotificationScreen()));
+      },
+      onResume: (Map<String, dynamic> message) async {
+        // print("onResume: $message");
+
+        _setMessage(message);
+      },
+    );
+
+    _saveDeviceToken(context);
+
+    super.initState();
+  }
+
+  /// Get the token, save it to the database for current user
+  _saveDeviceToken(BuildContext context) async {
+    final db = Provider.of<Database>(context, listen: false);
+    String fcmToken = await _fcm.getToken();
+    // print(fcmToken);
+
+    if (fcmToken != null) {
+      db.setFCMtoken(fcmToken);
+    }
+  }
+
   checkUser(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
     return _memoizer.runOnce(() async {
@@ -27,9 +93,6 @@ class _CheckUserExistsState extends State<CheckUserExists> {
 
   @override
   Widget build(BuildContext context) {
-    // final db = Provider.of<Database>(context,listen: false);
-    // bool isExists = true;
-
     return FutureBuilder(
         future: this.checkUser(context),
         builder: (context, snapshot) {
@@ -47,16 +110,9 @@ class _CheckUserExistsState extends State<CheckUserExists> {
             );
           }
           if (!snapshot.hasData) {
-            // isExists = false;
             return ProfileForm();
           } else {
             return HomeScreen();
-            // }
-
-            // return isExists ? HomeScreen() : Scaffold(body: ProfileForm());
-            // Navigator.pushNamed(context, '/profile-form');
-            // },
-            // );
           }
         });
   }
