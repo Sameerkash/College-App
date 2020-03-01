@@ -1,9 +1,12 @@
 import 'package:async/async.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
-import 'package:kssem/Notifiers/notification_notifier.dart';
+import 'package:kssem/UI/Widgets/platform_exceptoin_alert.dart';
+import 'package:kssem/Utilities/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Models/post.dart';
 import '../../Models/users.dart';
 import '../../Services/database.dart';
@@ -75,7 +78,7 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<Database>(context, listen: false);
-    
+
     var deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +98,11 @@ class _UserProfileState extends State<UserProfile> {
                   photoUrl: widget.user.photoUrl,
                   name: widget.user.displayName,
                   branch: widget.user.branch,
-                  dept: widget.user.department),
+                  dept: widget.user.department,
+                  descripcion: widget.user.links.description,
+                  githubUrl: widget.user.links.github,
+                  linkedInUrl: widget.user.links.linkedIn,
+                  linkUrl: widget.user.links.link),
               FutureBuilder(
                   future: getUserProfile(context),
                   builder: (context, snapshot) {
@@ -156,8 +163,23 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print("cant launch url");
+    }
+  }
+
   Card buildCard(Size devicesize,
-      {String name, String photoUrl, String branch, String dept}) {
+      {String name,
+      String photoUrl,
+      String branch,
+      String dept,
+      String descripcion,
+      String githubUrl,
+      String linkedInUrl,
+      String linkUrl}) {
     return Card(
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
       child: Container(
@@ -213,10 +235,20 @@ class _UserProfileState extends State<UserProfile> {
               SizedBox(
                 height: devicesize.height * .025,
               ),
-              Text(
-                " flutter developer, deep learning ,game development",
-                style: TextStyle(fontSize: 18, color: Colors.black),
-              ),
+              descripcion == null
+                  ? Text(
+                      "No Description",
+                      style: TextStyle(
+                          fontSize: SizeConfig.blockSizeHorizontal * 5),
+                    )
+                  : Text(
+                      descripcion,
+                      // "Flutter developer| Deep learning |Game development developer| Deep Learning ",
+                      style: TextStyle(
+                          fontSize: SizeConfig.blockSizeHorizontal * 5,
+                          color: Colors.grey[800],
+                          fontWeight: FontWeight.bold),
+                    ),
               SizedBox(
                 height: devicesize.height * .025,
               ),
@@ -224,22 +256,24 @@ class _UserProfileState extends State<UserProfile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _launchURL(githubUrl);
+                    },
                     icon: Icon(
                       MaterialCommunityIcons.github_box,
                       size: 30,
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _launchURL(linkedInUrl);
+                    },
                     icon: Icon(MaterialCommunityIcons.linkedin_box, size: 30),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(MaterialCommunityIcons.stack_overflow, size: 30),
-                  ),
-                  IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _launchURL(linkUrl);
+                    },
                     icon: Icon(MaterialCommunityIcons.link_box, size: 30),
                   )
                 ],
@@ -247,7 +281,7 @@ class _UserProfileState extends State<UserProfile> {
             ],
           ),
         ),
-        height: 300,
+        height: SizeConfig.blockSizeHorizontal * 73,
       ),
       elevation: 3.0,
     );

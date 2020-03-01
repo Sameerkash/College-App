@@ -2,7 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:kssem/Models/faculty.dart';
+// import 'package:kssem/Models/student.dart';
 import 'package:kssem/Utilities/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Models/post.dart';
 import '../../Notifiers/profile_notifier.dart';
 import '../../Notifiers/timeline_notifier.dart';
@@ -28,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   ScrollController _scrollController = ScrollController();
 
   var format = DateFormat('dd MMM yy | h:mm a');
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     ProfileNotifier posts =
@@ -174,6 +178,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       buildCard(devicesize,
+                          description: posts.currentFaculty.links.description,
+                          githubUrl: posts.currentFaculty.links.github,
+                          linkedInUrl: posts.currentFaculty.links.linkedIn,
+                          linkUrl: posts.currentFaculty.links.link,
                           photoUrl: posts.currentFaculty.photoUrl,
                           name: posts.currentFaculty.displayName ?? "name",
                           branch: posts.currentFaculty.department, onEdit: () {
@@ -263,14 +271,21 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+  String _description;
+  String _github;
+  String _stackOverflow;
+  String _linkedIn;
+  String _link;
   Widget buildBottomsheet(BuildContext context) {
+    ProfileNotifier faculty =
+        Provider.of<ProfileNotifier>(context, listen: false);
     return Container(
       color: Color(0xff3757575),
       child: Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
-          padding: EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 30),
+          padding: EdgeInsets.only(top: 15, left: 25, right: 25, bottom: 15),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -279,6 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             ),
           ),
           child: Form(
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -287,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
                 ),
                 SizedBox(
-                  height: 25,
+                  height: 7,
                 ),
                 TextFormField(
                   maxLines: 2,
@@ -295,6 +311,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                     icon: Icon(MaterialCommunityIcons.text),
                     hintText: "Description",
                   ),
+                  initialValue: faculty.currentFaculty.links.description,
+                  onSaved: (val) {
+                    _description = val;
+                  },
+                  validator: (val) {
+                    if (val.length < 75 || val.isEmpty) {
+                      return null;
+                    }
+                    return "Should be < 75 characters";
+                  },
                 ),
                 SizedBox(
                   height: 20,
@@ -307,18 +333,59 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     hintText: "Github Profile",
                   ),
+                  initialValue: faculty.currentFaculty.links.github,
+                  onSaved: (val) {
+                    _github = val;
+                  },
+                  validator: (val) {
+                    if (val.contains("https://") || val.isEmpty) {
+                      return null;
+                    }
+                    return "Enter a valid URL";
+                  },
                 ),
+                // SizedBox(
+                //   height: 20,
+                // ),
+                // TextFormField(
+                //   decoration: InputDecoration(
+                //     icon: Icon(
+                //       MaterialCommunityIcons.stack_overflow,
+                //       size: 30,
+                //     ),
+                //     hintText: "Stack Overflow Profile",
+                //   ),
+                //   onSaved: (val) {
+                //     _stackOverflow = val;
+                //   },
+                //   validator: (val) {
+                //     if (val.contains("https://")) {
+                //       return null;
+                //     }
+                //     return "Enter a valid URL";
+                //   },
+                // ),
                 SizedBox(
                   height: 20,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
                     icon: Icon(
-                      MaterialCommunityIcons.stack_overflow,
+                      MaterialCommunityIcons.linkedin,
                       size: 30,
                     ),
-                    hintText: "Stack Overflow Profile",
+                    hintText: "LinkedIn Profile",
                   ),
+                  initialValue: faculty.currentFaculty.links.linkedIn,
+                  onSaved: (val) {
+                    _linkedIn = val;
+                  },
+                  validator: (val) {
+                    if (val.contains("https://") || val.isEmpty) {
+                      return null;
+                    }
+                    return "Enter a valid URL";
+                  },
                 ),
                 SizedBox(
                   height: 20,
@@ -331,6 +398,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     hintText: "Otehr links (Website or Email)",
                   ),
+                  initialValue: faculty.currentFaculty.links.link,
+                  onSaved: (val) {
+                    _link = val;
+                  },
+                  validator: (val) {
+                    if (val.contains(".com") || val.isEmpty) {
+                      return null;
+                    }
+                    return "Enter a valid URL";
+                  },
                 ),
                 SizedBox(
                   height: 30,
@@ -345,7 +422,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                         splashColor: Colors.indigo,
                         icon: Icon(Icons.check),
                         color: Colors.white,
-                        onPressed: () {},
+                        onPressed: () {
+                          _submitFome(context);
+                        },
                       ),
                     ),
                   ),
@@ -358,8 +437,55 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+  bool _validateAndSaveForm() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  _submitFome(BuildContext context) async {
+    final db = Provider.of<Database>(context, listen: false);
+    ProfileNotifier faculty =
+        Provider.of<ProfileNotifier>(context, listen: false);
+
+    if (_validateAndSaveForm()) {
+      try {
+        print(_description);
+        ProfileLinks links = ProfileLinks(
+          description: _description,
+          github: _github,
+          stackOverflow: _stackOverflow,
+          linkedIn: _linkedIn,
+          link: _link,
+        );
+        await db.updateProfileLinks(faculty.currentFaculty, links);
+        Navigator.pop(context);
+      } catch (e) {
+        throw '$e';
+      }
+    }
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Card buildCard(Size devicesize,
-      {String name, String photoUrl, String branch, Function onEdit}) {
+      {String name,
+      String photoUrl,
+      String branch,
+      Function onEdit,
+      String description,
+      String githubUrl,
+      String linkedInUrl,
+      String linkUrl}) {
     return Card(
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
       child: Container(
@@ -408,13 +534,20 @@ class _ProfileScreenState extends State<ProfileScreen>
               SizedBox(
                 height: devicesize.height * .027,
               ),
-              Text(
-                "Flutter developer| Deep learning |Game development developer| Deep Learning ",
-                style: TextStyle(
-                    fontSize: SizeConfig.blockSizeHorizontal * 5,
-                    color: Colors.grey[800],
-                    fontWeight: FontWeight.bold),
-              ),
+              description == null
+                  ? Text(
+                      "Update your Profile",
+                      style: TextStyle(
+                          fontSize: SizeConfig.blockSizeHorizontal * 5),
+                    )
+                  : Text(
+                      description,
+                      // "Flutter developer| Deep learning |Game development developer| Deep Learning ",
+                      style: TextStyle(
+                          fontSize: SizeConfig.blockSizeHorizontal * 5,
+                          color: Colors.grey[800],
+                          fontWeight: FontWeight.bold),
+                    ),
               SizedBox(
                 height: devicesize.height * .025,
               ),
@@ -422,26 +555,28 @@ class _ProfileScreenState extends State<ProfileScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _launchURL(githubUrl);
+                    },
                     icon: Icon(
                       MaterialCommunityIcons.github_box,
-                      size: 30,
+                      size: 28,
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(MaterialCommunityIcons.linkedin_box, size: 30),
+                    onPressed: () {
+                      _launchURL(linkedInUrl);
+                    },
+                    icon: Icon(MaterialCommunityIcons.linkedin_box, size: 28),
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(MaterialCommunityIcons.stack_overflow, size: 30),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(MaterialCommunityIcons.link_box, size: 30),
+                    onPressed: () {
+                      _launchURL(linkUrl);
+                    },
+                    icon: Icon(MaterialCommunityIcons.link_box, size: 28),
                   ),
                   SizedBox(
-                    width: 30,
+                    width: 25,
                   ),
                   IconButton(
                     icon: Icon(

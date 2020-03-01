@@ -48,6 +48,7 @@ abstract class Database {
     Notifications currentNotification,
     String currentdepartment,
   );
+  updateProfileLinks(Faculty faculty, ProfileLinks links);
   // addclassRoom(ClassRoom classRoom);
   // getClassRoom(ClassRoomNotifier classRooms);
   // getClassStudents(ClassRoom classRoom, ClassRoomNotifier classRoomNotify);
@@ -565,6 +566,18 @@ class FirestoreDatabase implements Database {
     await profileref.document(currentNotification.nid).delete();
     // await timelineref.document(cure.postId).delete();
     // postDeleted();
+  }
+
+  updateProfileLinks(Faculty faculty, ProfileLinks links) async {
+    final ref = Firestore.instance.collection('faculty');
+    print(links.description);
+    await ref.document('${faculty.uid}').updateData({
+      'links.description': links.description,
+      'links.github': links.github,
+      'links.stackOverflow': links.stackOverflow,
+      'links.linkedIn': links.linkedIn,
+      'links.link': links.link
+    });
   }
 
 // Notification ends

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:kssem/Models/faculty.dart';
 
 class Users {
   final String uid;
@@ -12,8 +13,7 @@ class Users {
   final String department;
   final String designation;
   String photoUrl;
-  dynamic links;
-  dynamic posts;
+  ProfileLinks links;
 
   Users({
     @required this.uid,
@@ -28,7 +28,6 @@ class Users {
     this.department,
     this.photoUrl,
     this.links,
-    this.posts,
   });
 
   factory Users.fromStudentMap(Map<String, dynamic> data) {
@@ -44,8 +43,7 @@ class Users {
     final String branch = data['branch'];
     final String degree = data['degree'];
     final String photoUrl = data['photoUrl'];
-    dynamic links = data['links'];
-    dynamic posts = data['pots'];
+    Map<dynamic, dynamic> links = data['links'];
     return Users(
       uid: uid,
       // usn: usn,
@@ -56,8 +54,7 @@ class Users {
       branch: branch,
       photoUrl: photoUrl,
       degree: degree,
-      links: links,
-      posts: posts,
+      links: ProfileLinks.fromMap(links),
     );
   }
   factory Users.fromFacultyMap(Map<String, dynamic> data) {
@@ -74,8 +71,7 @@ class Users {
     final String department = data['department'];
     final String designation = data['designarion'];
     final String photoUrl = data['photoUrl'];
-    dynamic links = data['links'];
-    dynamic posts = data['pots'];
+    Map<dynamic, dynamic> links = data['links'];
     return Users(
       uid: uid,
       // usn: usn,
@@ -83,12 +79,11 @@ class Users {
       displayName: displayName,
       phone: phone,
       email: email,
-       branch: branch,
+      branch: branch,
       department: department,
       photoUrl: photoUrl,
       designation: designation,
-      links: links,
-      posts: posts,
+      links: ProfileLinks.fromMap(links),
     );
   }
 
@@ -104,8 +99,7 @@ class Users {
       'department': department,
       'degree': degree ?? '',
       'photoUrl': photoUrl ?? '',
-      'links': links ?? '',
-      'posts': posts ?? ''
+      'links': {},
     };
   }
 }

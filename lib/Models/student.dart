@@ -11,8 +11,7 @@ class Student {
   final String degree;
   final String batch;
   String photoUrl;
-  dynamic links;
-  dynamic posts;
+  ProfileLinks links;
 
   Student({
     @required this.uid,
@@ -26,7 +25,6 @@ class Student {
     this.batch,
     this.photoUrl,
     this.links,
-    this.posts,
   });
 
   factory Student.fromMap(Map<String, dynamic> data) {
@@ -44,7 +42,6 @@ class Student {
     final String photoUrl = data['photoUrl'];
     final String batch = data['batch'];
     dynamic links = data['links'];
-    dynamic posts = data['pots'];
     return Student(
       uid: uid,
       usn: usn,
@@ -56,8 +53,7 @@ class Student {
       photoUrl: photoUrl,
       degree: degree,
       batch: batch,
-      links: links,
-      posts: posts,
+      links: ProfileLinks.fromMap(links),
     );
   }
 
@@ -73,8 +69,51 @@ class Student {
       'degree': degree ?? '',
       'batch': batch,
       'photoUrl': photoUrl ?? '',
-      'links': links ?? '',
-      'posts': posts ?? ''
+      'links': {},
+    };
+  }
+}
+
+class ProfileLinks {
+  String description;
+  String github;
+  String stackOverflow;
+  String linkedIn;
+  String link;
+
+  ProfileLinks(
+      {this.description,
+      this.github,
+      this.stackOverflow,
+      this.link,
+      this.linkedIn});
+
+  factory ProfileLinks.fromMap(Map<String, dynamic> data) {
+    if (data == null) {
+      return null;
+    }
+    final String description = data['description'];
+    final String github = data['github'];
+    final String stackOverflow = data['stackOverflow'];
+    final String linkedIn = data['linkedIn'];
+
+    final String link = data['link'];
+    return ProfileLinks(
+      description: description,
+      github: github,
+      stackOverflow: stackOverflow,
+      linkedIn: linkedIn,
+      link: link,
+    );
+  }
+
+  Map<String, dynamic> toUpdateProfile() {
+    return {
+      'links.description': description,
+      'links.github': github,
+      'links.stackOverflow': stackOverflow,
+      'links.linkedIn': linkedIn,
+      'links.link': link
     };
   }
 }
