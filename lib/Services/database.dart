@@ -465,7 +465,7 @@ class FirestoreDatabase implements Database {
       bool isDetNotify,
       String currentdepartment,
       String url}) async {
-    notification.imageUrl = "";
+   
     if (url != null) {
       notification.imageUrl = url;
     }

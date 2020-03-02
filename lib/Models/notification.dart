@@ -56,7 +56,7 @@ class Notifications {
       'nid': nid,
       'uid': uid,
       // 'title': title,
-      'imageUrl': imageUrl ?? "",
+      'imageUrl': imageUrl,
       'facultyName': facultyName,
       'content': content,
       'createdAt': createdAt,

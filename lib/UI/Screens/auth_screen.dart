@@ -20,7 +20,7 @@ class AuthScreen extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned(
-            left: SizeConfig.blockSizeHorizontal * 10,
+            left: SizeConfig.blockSizeHorizontal * 12,
             top: SizeConfig.blockSizeVertical * 5,
             child: Container(
               width: SizeConfig.blockSizeVertical * 40,

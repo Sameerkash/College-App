@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:kssem/Utilities/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import '../../Notifiers/theme_changer.dart';
 // import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       child: Scaffold(
         body: Container(
-          padding: EdgeInsets.only(top: 50),
+          padding: EdgeInsets.only(top: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -53,12 +54,17 @@ class AppDrawer extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                height: 30,
+                height: SizeConfig.blockSizeVertical*3,
               ),
               buildListTile(
                 title: "Arohana",
                 subtitle: "Coming Soon",
-                icon: MaterialCommunityIcons.heart_pulse,
+                icon: MaterialCommunityIcons.movie,
+              ),
+               buildListTile(
+                title: "COD",
+                subtitle: "code of conduct",
+                icon: MaterialCommunityIcons.flag,
               ),
               // SizedBox(
               //   height: 5,
@@ -67,9 +73,9 @@ class AppDrawer extends StatelessWidget {
               //     title: "Discover KSSEM",
               //     subtitle: "Coming Soon",
               //     icon: Octicons.globe),
-              SizedBox(
-                height: 300,
-              ),
+              // SizedBox(
+              //   height: SizeConfig.blockSizeVertical *4,
+              // ),
               // IconButton(
               //   icon: Icon(Icons.lightbulb_outline),
               //   onPressed: () {

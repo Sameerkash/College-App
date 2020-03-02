@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kssem/Models/notification.dart';
-import 'package:kssem/Notifiers/classroom.dart';
-import 'package:kssem/Notifiers/notification_notifier.dart';
+import 'package:flutter/services.dart';
+
 import 'package:kssem/Notifiers/profile_notifier.dart';
 import 'package:kssem/Notifiers/search_notifier.dart';
 // import 'package:kssem/Notifiers/theme_changer.dart';
@@ -17,7 +16,11 @@ import 'package:provider/provider.dart';
 
 import 'UI/Screens/landind_page.dart';
 
-void main() => runApp(MyApp());
+void main() {
+   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+    .then((_)  => runApp(MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   @override
