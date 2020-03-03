@@ -54,7 +54,7 @@ class _NotificationScreenState extends State<NotificationScreen>
               onChanged: (currencyValue) {
                 setState(() {
                   selectedDept = currencyValue;
-                  print(selectedDept);
+                  // print(selectedDept);
                 });
               },
               value: selectedDept,

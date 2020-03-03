@@ -48,6 +48,18 @@ class _ProfileFormState extends State<ProfileForm> {
     }
   }
 
+  List<String> _deptNames = ["CSE", "CIV", "EEE", "ECE", "MECH"];
+
+  List<String> _designations = [
+    "Asst. Prof.",
+    "Associate Prof.",
+    "Associate Prof. & HOD",
+    "Librarian",
+    "Mangement Official",
+    "Non-Teaching Faculty",
+    "Principal",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +67,7 @@ class _ProfileFormState extends State<ProfileForm> {
         // leading: Icon(Icons.person),
         backgroundColor: Colors.black,
         title: Text(
-          "Complete Your Profile",
+          "Your Profile",
           style: TextStyle(fontSize: 18),
         ),
         actions: <Widget>[
@@ -81,11 +93,11 @@ class _ProfileFormState extends State<ProfileForm> {
               Expanded(
                 child: ListView(
                   children: <Widget>[
-                    buildTextFormField("Full Name", (value) {
+                    buildTextFormField("Full Name (ex: Sam Kash)", (value) {
                       if (value.length > 6) {
                         return null;
                       } else {
-                        return "Enter Full Name";
+                        return "Enter Full Name ";
                       }
                     }, (value) => _name = value, Icons.person),
                     buildTextFormField("Faculty ID", (value) {
@@ -110,32 +122,111 @@ class _ProfileFormState extends State<ProfileForm> {
                         return "Enter valid email ";
                       }
                     }, (value) => _email = value, Icons.mail),
-                    buildTextFormField("Department(CSE,ECE,EEE,ME,CIV)",
-                        (value) {
-                      // Pattern pattern = r"/[CSE\,ECE\,EEE\,ME\,CIV]/";
-                      // RegExp regex = new RegExp(pattern);
+                    // buildTextFormField("Department(CSE,ECE,EEE,ME,CIV)",
+                    //     (value) {
+                    //   // Pattern pattern = r"/[CSE\,ECE\,EEE\,ME\,CIV]/";
+                    //   // RegExp regex = new RegExp(pattern);
 
-                      if ((value.contains("CSE") ||
-                              value.contains("ECE") ||
-                              value.contains("EEE") ||
-                              value.contains("ME") ||
-                              value.contains("CIV")) &&
-                          (value.length <= 3)) {
-                        return null;
-                      } else {
-                        return "Enter a valid Department";
-                      }
-                    }, (value) => _department = value,
-                        MaterialCommunityIcons.alphabetical),
-                    buildTextFormField("Designation", (value) {
-                      if (value.contains("Asst.") ||
-                          value.contains("Associate")) {
-                        return null;
-                      } else {
-                        return "Enter a valid designation";
-                      }
-                    }, (value) => _designation = value,
-                        MaterialCommunityIcons.google_classroom),
+                    //   if ((value.contains("CSE") ||
+                    //           value.contains("ECE") ||
+                    //           value.contains("EEE") ||
+                    //           value.contains("ME") ||
+                    //           value.contains("CIV")) &&
+                    //       (value.length <= 3)) {
+                    //     return null;
+                    //   } else {
+                    //     return "Enter a valid Department";
+                    //   }
+                    // }, (value) => _department = value,
+                    //     MaterialCommunityIcons.alphabetical),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16, right: 18, top: 18),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white),
+                        padding: EdgeInsets.all(8),
+                        // color: Colors.white,
+                        height: 60,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(MaterialCommunityIcons.google_classroom),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            DropdownButton(
+                              items: _deptNames
+                                  .map((value) => DropdownMenuItem(
+                                        value: value,
+                                        child: Text(value),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _department = value;
+                                  print(_department);
+                                });
+                              },
+                              value: _department,
+                              isExpanded: false,
+                              hint: Text(
+                                "Department",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16, right: 18, top: 18),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white),
+                        padding: EdgeInsets.all(8),
+                        // color: Colors.white,
+                        height: 60,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(MaterialCommunityIcons.pen),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            DropdownButton(
+                              items: _designations
+                                  .map((value) => DropdownMenuItem(
+                                        value: value,
+                                        child: Text(value),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _designation = value;
+                                  print(_designation);
+                                });
+                              },
+                              value: _designation,
+                              isExpanded: false,
+                              hint: Text(
+                                "Designation",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // buildTextFormField("Designation", (value) {
+                    //   if (value.contains("Asst.") ||
+                    //       value.contains("Associate")) {
+                    //     return null;
+                    //   } else {
+                    //     return "Enter a valid designation";
+                    //   }
+                    // }, (value) => _designation = value,
+                    //     MaterialCommunityIcons.google_classroom),
                     SizedBox(
                       height: 30,
                     ),
@@ -238,23 +329,32 @@ class _ProfileFormState extends State<ProfileForm> {
   Future<void> _submit(BuildContext context) async {
     final db = Provider.of<Database>(context, listen: false);
     if (_validateAndSaveForm()) {
-      try {
-        Faculty faculty = Faculty(
-            uid: db.userId,
-            facultyId: _facultyId,
-            name: _name,
-            displayName: db.displayName,
-            department: _department,
-            email: _email,
-            phone: _phone,
-            photoUrl: db.photoUrl,
-            designation: _designation);
-        await db.setFaculty(faculty);
-      } on PlatformException catch (e) {
-        PlatformExceptionAlertDialog(
-          title: 'Operation failed',
-          exception: e,
-        ).show(context);
+      if (_department == null && _designation == null) {
+        PlatformAlertDialog(
+                title: "Error",
+                content: "PLease fill all the values",
+                defaultActionText: "OK")
+            .show(context);
+        return;
+      } else {
+        try {
+          Faculty faculty = Faculty(
+              uid: db.userId,
+              facultyId: _facultyId,
+              name: _name,
+              displayName: db.displayName,
+              department: _department,
+              email: _email,
+              phone: _phone,
+              photoUrl: db.photoUrl,
+              designation: _designation);
+          await db.setFaculty(faculty);
+        } on PlatformException catch (e) {
+          PlatformExceptionAlertDialog(
+            title: 'Operation failed',
+            exception: e,
+          ).show(context);
+        }
       }
     }
   }

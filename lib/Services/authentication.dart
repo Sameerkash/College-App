@@ -23,7 +23,6 @@ class UserProvider with ChangeNotifier {
   User get user => _user;
   String get uid => _user.uid;
 
-
   UserProvider.initialize() : _firebaseAuth = FirebaseAuth.instance {
     _firebaseAuth.onAuthStateChanged.listen(_onStateChanged);
   }
@@ -40,8 +39,17 @@ class UserProvider with ChangeNotifier {
   Future<User> signInWithGoogle() async {
     _status = Status.AUTHENTICATING;
     notifyListeners();
+
     final googleSignIn = GoogleSignIn();
+
     final googleAccount = await googleSignIn.signIn();
+
+    // if (googleAccount == null) {
+    //   throw PlatformException(
+    //     code: 'Network Error',
+    //     message: 'Please Check your Network Connection',
+    //   );
+    // }
     if (googleAccount != null) {
       final googleAuth = await googleAccount.authentication;
       if (googleAuth.accessToken != null && googleAuth.idToken != null) {

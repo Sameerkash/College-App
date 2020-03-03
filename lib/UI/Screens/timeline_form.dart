@@ -14,17 +14,19 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 class TimelineForm extends StatefulWidget {
-  TimelineForm({
-    Key key,
-    this.isUpdating,
-    this.isCollegeNotification,
-    this.isDepartmentnotification,
-    this.selectedDept,
-  }) : super(key: key);
+  TimelineForm(
+      {Key key,
+      this.isUpdating,
+      this.isCollegeNotification,
+      this.isDepartmentnotification,
+      this.selectedDept,
+      this.scaffoldContext})
+      : super(key: key);
   final bool isUpdating;
   final bool isDepartmentnotification;
   final bool isCollegeNotification;
   final String selectedDept;
+  final BuildContext scaffoldContext;
 
   @override
   _TimelineFormState createState() => _TimelineFormState();
@@ -40,6 +42,16 @@ class _TimelineFormState extends State<TimelineForm>
   File _imageFile;
   String _content;
   String _title;
+
+  final snackBar = SnackBar(
+      duration: Duration(seconds: 4),
+      content: Text(
+        "Posted  Successfully!",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.red);
 
   _showImage() {
     if (_imageFile == null && _imageUrl == null) {
@@ -276,18 +288,20 @@ class _TimelineFormState extends State<TimelineForm>
   Future<void> _submit(BuildContext context) async {
     final db = Provider.of<Database>(context, listen: false);
     final faculty = Provider.of<ProfileNotifier>(context, listen: false);
+    final timelinePosts = Provider.of<TimelineNotifer>(context, listen: false);
+    final posts = Provider.of<ProfileNotifier>(context, listen: false);
     if (_validateAndSaveForm()) {
       try {
         // String dateTime = DateTime.now().toIso8601String();
         // Timestamp timeStamp = Timestamp.now();
         Notifications notifiy = Notifications(
-          uid: db.userId,
-          facultyName: db.displayName,
-          content: _content,
-          storedDepartment: faculty.currentFaculty.department,
-          isCollegeNotification:widget.isCollegeNotification
-          // department: widget.selectedDept
-        );
+            uid: db.userId,
+            facultyName: db.displayName,
+            content: _content,
+            storedDepartment: faculty.currentFaculty.department,
+            isCollegeNotification: widget.isCollegeNotification
+            // department: widget.selectedDept
+            );
         setState(() {
           _isLoading = true;
         });
@@ -304,7 +318,6 @@ class _TimelineFormState extends State<TimelineForm>
         } else if (widget.isDepartmentnotification == false &&
             widget.isCollegeNotification == true) {
           await db.setNotificationImage(
-
               localFile: _imageFile,
               notification: notifiy,
               currentdepartment: widget.selectedDept,
@@ -313,7 +326,7 @@ class _TimelineFormState extends State<TimelineForm>
         } else {
           Post post = Post(
             uid: db.userId,
-            userName: db.displayName,
+            userName: faculty.currentFaculty.displayName,
             photoUrl: db.photoUrl,
             title: _title,
             content: _content,
@@ -330,13 +343,12 @@ class _TimelineFormState extends State<TimelineForm>
           setState(() {
             _isLoading = false;
           });
-          TimelineNotifer timelinePosts =
-              Provider.of<TimelineNotifer>(context, listen: false);
-          db.getTimeline(timelinePosts);
-          ProfileNotifier posts =
-              Provider.of<ProfileNotifier>(context, listen: false);
-          db.getPosts(posts);
+
+          await db.getTimeline(timelinePosts);
+          await  db.getPosts(posts);
+          Scaffold.of(widget.scaffoldContext).showSnackBar(snackBar);
         }
+
         Navigator.pop(context);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(

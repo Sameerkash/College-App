@@ -1,11 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:kssem/UI/Screens/discover_kssem_screen.dart';
+import 'package:kssem/Services/database.dart';
+import 'package:kssem/UI/Screens/profile_form.dart';
+import 'package:provider/provider.dart';
 import '../Screens/feed_screen.dart';
 import '../Screens/notification_screen.dart';
 import '../Screens/profile_screen.dart';
-import '../Screens/resources_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const route = 'home';
@@ -19,10 +21,49 @@ class _HomeScreenState extends State<HomeScreen> {
   int pageIndex = 0;
   GlobalKey _bottomNavigationKey = GlobalKey();
 
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
+  _setMessage(Map<String, dynamic> message) {
+    final notification = message['notification'];
+    final data = message['data'];
+    final String title = notification['title'];
+    final String body = notification['body'];
+    String mMessage = data['message'];
+    print("Title: $title, body: $body, message: $mMessage");
+  }
+
   @override
   void initState() {
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        // print("onMessage: $message");
+        _setMessage(message);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        _setMessage(message);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NotificationScreen()));
+      },
+      onResume: (Map<String, dynamic> message) async {
+        // print("onResume: $message");
+
+        _setMessage(message);
+      },
+    );
+    _saveDeviceToken(context);
     super.initState();
     pageController = PageController();
+  }
+
+  _saveDeviceToken(BuildContext context) async {
+    final db = Provider.of<Database>(context, listen: false);
+    String fcmToken = await _fcm.getToken();
+    // print(fcmToken);
+
+    if (fcmToken != null) {
+      db.setFCMtoken(fcmToken);
+    }
   }
 
   @override
@@ -64,7 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           FeedScreen(),
           NotificationScreen(),
-          DiscoverKssemScreen(),
+          // DiscoverKssemScreen(),
+          ProfileForm(),
           // ResourceScreen(),
           ProfileScreen(),
         ],

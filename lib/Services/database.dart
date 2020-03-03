@@ -48,7 +48,7 @@ abstract class Database {
     Notifications currentNotification,
     String currentdepartment,
   );
-  updateProfileLinks(Faculty faculty, ProfileLinks links);
+  updateProfileLinks(Faculty faculty, ProfileLinks links, String username);
   setFCMtoken(var fcmToken);
   get userId;
   // get dateTime;
@@ -465,7 +465,6 @@ class FirestoreDatabase implements Database {
       bool isDetNotify,
       String currentdepartment,
       String url}) async {
-   
     if (url != null) {
       notification.imageUrl = url;
     }
@@ -574,10 +573,13 @@ class FirestoreDatabase implements Database {
     // postDeleted();
   }
 
-  updateProfileLinks(Faculty faculty, ProfileLinks links) async {
+  updateProfileLinks(
+      Faculty faculty, ProfileLinks links, String username) async {
     final ref = Firestore.instance.collection('faculty');
     print(links.description);
     await ref.document('${faculty.uid}').updateData({
+      'displayName': username,
+      // 'photoUrl': photoUrl,
       'links.description': links.description,
       'links.github': links.github,
       'links.stackOverflow': links.stackOverflow,

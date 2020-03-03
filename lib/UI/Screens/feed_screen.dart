@@ -24,6 +24,10 @@ class _FeedScreenState extends State<FeedScreen>
 
   ScrollController _scrollController = ScrollController();
 
+ 
+
+  BuildContext scaffoldContext;
+
   @override
   void initState() {
     TimelineNotifer timelinePosts =
@@ -132,55 +136,61 @@ class _FeedScreenState extends State<FeedScreen>
         backgroundColor: Colors.black,
       ),
       drawer: AppDrawer(db.displayName),
-      body: timelinePosts.timelinePosts.isEmpty
-          ? Center(
-              child: ColorLoader3(
-                radius: 16,
-                dotRadius: 6,
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: () {
-                return db.getTimeline(timelinePosts);
-              },
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: timelinePosts.timelinePosts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  bool isLiked =
-                      timelinePosts.timelinePosts[index].likes[db.userId] ==
-                          true;
+      body: Builder(
+        builder: (BuildContext context) {
+          scaffoldContext = context;
+          return timelinePosts.timelinePosts.isEmpty
+              ? Center(
+                  child: ColorLoader3(
+                    radius: 16,
+                    dotRadius: 6,
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: () {
+                    return db.getTimeline(timelinePosts);
+                  },
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: timelinePosts.timelinePosts.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      bool isLiked =
+                          timelinePosts.timelinePosts[index].likes[db.userId] ==
+                              true;
 
-                  return buildFeedCard(
-                    context,
-                    imageUrl: timelinePosts.timelinePosts[index].imageUrl,
-                    isLiked: isLiked,
-                    likeCount: getLikeCount(timelinePosts.timelinePosts[index]),
-                    onLiked: () {
-                      handleLikePost(timelinePosts.timelinePosts[index]);
+                      return buildFeedCard(
+                        context,
+                        imageUrl: timelinePosts.timelinePosts[index].imageUrl,
+                        isLiked: isLiked,
+                        likeCount:
+                            getLikeCount(timelinePosts.timelinePosts[index]),
+                        onLiked: () {
+                          handleLikePost(timelinePosts.timelinePosts[index]);
+                        },
+                        photoUrl: timelinePosts.timelinePosts[index].photoUrl,
+                        name: timelinePosts.timelinePosts[index].userName,
+                        content: timelinePosts.timelinePosts[index].content,
+                        title: timelinePosts.timelinePosts[index].title,
+                        timestamp:
+                            timelinePosts.timelinePosts[index].updatedAt == null
+                                ? '  ' +
+                                    format
+                                        .format(timelinePosts
+                                            .timelinePosts[index].createdAt
+                                            .toDate())
+                                        .toString()
+                                : '✏️ ' +
+                                    format
+                                        .format(timelinePosts
+                                            .timelinePosts[index].updatedAt
+                                            .toDate())
+                                        .toString(),
+                      );
                     },
-                    photoUrl: timelinePosts.timelinePosts[index].photoUrl,
-                    name: timelinePosts.timelinePosts[index].userName,
-                    content: timelinePosts.timelinePosts[index].content,
-                    title: timelinePosts.timelinePosts[index].title,
-                    timestamp: timelinePosts.timelinePosts[index].updatedAt ==
-                            null
-                        ? '  ' +
-                            format
-                                .format(timelinePosts
-                                    .timelinePosts[index].createdAt
-                                    .toDate())
-                                .toString()
-                        : '✏️ ' +
-                            format
-                                .format(timelinePosts
-                                    .timelinePosts[index].updatedAt
-                                    .toDate())
-                                .toString(),
-                  );
-                },
-              ),
-            ),
+                  ),
+                );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
           heroTag: 'timelinePost',
           child: Icon(
@@ -197,6 +207,7 @@ class _FeedScreenState extends State<FeedScreen>
                   isUpdating: false,
                   isCollegeNotification: false,
                   isDepartmentnotification: false,
+                  scaffoldContext: scaffoldContext,
                 ),
               ),
             );

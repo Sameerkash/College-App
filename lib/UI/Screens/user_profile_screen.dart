@@ -171,119 +171,119 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Card buildCard(Size devicesize,
-      {String name,
-      String photoUrl,
-      String branch,
-      String dept,
-      String descripcion,
-      String githubUrl,
-      String linkedInUrl,
-      String linkUrl}) {
-    return Card(
-      margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
-      child: Container(
-        child: Padding(
-          padding:
-              EdgeInsets.only(top: devicesize.height * .04, left: 8, right: 8),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(photoUrl),
-                    backgroundColor: Colors.blue,
-                  ),
-                  SizedBox(
-                    width: devicesize.height * .03,
-                  ),
-                  Column(
-                    children: <Widget>[
-                      AutoSizeText(
-                        // snapshot.data.name,
-                        name,
-                        // "Sameer Kashayp",
-                        maxFontSize: 23,
-                        minFontSize: 20,
-                        maxLines: 2,
+    Card buildCard(Size devicesize,
+        {String name,
+        String photoUrl,
+        String branch,
+        String dept,
+        String descripcion,
+        String githubUrl,
+        String linkedInUrl,
+        String linkUrl}) {
+      return Card(
+        margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
+        child: Container(
+          child: Padding(
+            padding:
+                EdgeInsets.only(top: devicesize.height * .04, left: 8, right: 8),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(photoUrl),
+                      backgroundColor: Colors.blue,
+                    ),
+                    SizedBox(
+                      width: devicesize.height * .03,
+                    ),
+                    Column(
+                      children: <Widget>[
+                        AutoSizeText(
+                          // snapshot.data.name,
+                          name,
+                          // "Sameer Kashayp",
+                          maxFontSize: 23,
+                          minFontSize: 20,
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: devicesize.height * .019,
+                        ),
+                        branch == null
+                            ? AutoSizeText(
+                                dept,
+                                // snapshot.data.branch,
+                                // " 1KG17CS070",
+                                minFontSize: 23,
+                                style: TextStyle(color: Colors.black),
+                              )
+                            : AutoSizeText(
+                                branch,
+                                // snapshot.data.branch,
+                                // " 1KG17CS070",
+                                minFontSize: 23,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: devicesize.height * .025,
+                ),
+                descripcion == null
+                    ? Text(
+                        "No Description",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                            fontSize: SizeConfig.blockSizeHorizontal * 5),
+                      )
+                    : Text(
+                        descripcion,
+                        // "Flutter developer| Deep learning |Game development developer| Deep Learning ",
+                        style: TextStyle(
+                            fontSize: SizeConfig.blockSizeHorizontal * 5,
+                            color: Colors.grey[800],
+                            fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
-                        height: devicesize.height * .019,
+                SizedBox(
+                  height: devicesize.height * .025,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        _launchURL(githubUrl);
+                      },
+                      icon: Icon(
+                        MaterialCommunityIcons.github_box,
+                        size: 30,
                       ),
-                      branch == null
-                          ? AutoSizeText(
-                              dept,
-                              // snapshot.data.branch,
-                              // " 1KG17CS070",
-                              minFontSize: 23,
-                              style: TextStyle(color: Colors.black),
-                            )
-                          : AutoSizeText(
-                              branch,
-                              // snapshot.data.branch,
-                              // " 1KG17CS070",
-                              minFontSize: 23,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: devicesize.height * .025,
-              ),
-              descripcion == null
-                  ? Text(
-                      "No Description",
-                      style: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 5),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _launchURL(linkedInUrl);
+                      },
+                      icon: Icon(MaterialCommunityIcons.linkedin_box, size: 30),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _launchURL(linkUrl);
+                      },
+                      icon: Icon(MaterialCommunityIcons.link_box, size: 30),
                     )
-                  : Text(
-                      descripcion,
-                      // "Flutter developer| Deep learning |Game development developer| Deep Learning ",
-                      style: TextStyle(
-                          fontSize: SizeConfig.blockSizeHorizontal * 5,
-                          color: Colors.grey[800],
-                          fontWeight: FontWeight.bold),
-                    ),
-              SizedBox(
-                height: devicesize.height * .025,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      _launchURL(githubUrl);
-                    },
-                    icon: Icon(
-                      MaterialCommunityIcons.github_box,
-                      size: 30,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      _launchURL(linkedInUrl);
-                    },
-                    icon: Icon(MaterialCommunityIcons.linkedin_box, size: 30),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      _launchURL(linkUrl);
-                    },
-                    icon: Icon(MaterialCommunityIcons.link_box, size: 30),
-                  )
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
+          height: SizeConfig.blockSizeHorizontal * 73,
         ),
-        height: SizeConfig.blockSizeHorizontal * 73,
-      ),
-      elevation: 3.0,
-    );
+        elevation: 3.0,
+      );
+    }
   }
-}
