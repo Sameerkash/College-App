@@ -3,11 +3,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:kssem/Services/database.dart';
-import 'package:kssem/UI/Screens/profile_form.dart';
+// import 'package:kssem/UI/Screens/profile_form.dart';
 import 'package:provider/provider.dart';
 import '../Screens/feed_screen.dart';
 import '../Screens/notification_screen.dart';
 import '../Screens/profile_screen.dart';
+import 'discover_kssem_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const route = 'home';
@@ -105,8 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           FeedScreen(),
           NotificationScreen(),
-          // DiscoverKssemScreen(),
-          ProfileForm(),
+          DiscoverKssemScreen(),
+          // ProfileForm(),
           // ResourceScreen(),
           ProfileScreen(),
         ],

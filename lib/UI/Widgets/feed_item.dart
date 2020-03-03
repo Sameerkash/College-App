@@ -107,10 +107,10 @@ Flexible buildContent({String content, String title, String imageUrl}) {
                   await launch(
                     link.url,
                     // forceWebView: true,
-                    enableJavaScript: true,
+                    // enableJavaScript: true,
                   );
                 } else {
-                  throw 'Could not launch $link';
+                  print('Could not launch $link');
                 }
               },
               style: TextStyle(fontSize: 16),

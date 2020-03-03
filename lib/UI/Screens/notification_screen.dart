@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:kssem/Models/notification.dart';
 import 'package:kssem/Services/database.dart';
@@ -9,6 +10,7 @@ import 'package:kssem/UI/Widgets/platform_alert_dialog.dart';
 import 'package:kssem/UI/Widgets/progress_bars.dart';
 import 'package:kssem/Utilities/size_config.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -195,7 +197,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                   ),
                 ),
                 Positioned(
-                   top: SizeConfig.blockSizeVertical * 58,
+                  top: SizeConfig.blockSizeVertical * 58,
                   left: SizeConfig.blockSizeHorizontal * 78,
                   child: FloatingActionButton(
                     child: Icon(Icons.notifications),
@@ -255,9 +257,21 @@ class _NotificationScreenState extends State<NotificationScreen>
             ),
             Container(
               padding: EdgeInsets.all(10),
-              child: Text(
-                // "College will remained closed in accound of the bandh",
-                content,
+              child: Linkify(
+                onOpen: (link) async {
+                  if (await canLaunch(link.url)) {
+                    await launch(
+                      link.url,
+                      // forceWebView: true,
+                      // enableJavaScript: true,
+                    );
+                  } else {
+                    print('Could not launch $link');
+                  }
+                },
+                text:
+                    // "College will remained closed in accound of the bandh",
+                    content,
                 style: TextStyle(color: Colors.white),
               ),
             ),
