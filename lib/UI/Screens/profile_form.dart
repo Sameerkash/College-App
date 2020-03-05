@@ -320,6 +320,7 @@ class _ProfileFormState extends State<ProfileForm> {
   }
 
   _submitFuture() {
+    // await 
     _submit(this.context);
     Timer(Duration(milliseconds: 500), () {
       Navigator.pushReplacementNamed(context, 'check-user');

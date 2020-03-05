@@ -24,8 +24,6 @@ class _FeedScreenState extends State<FeedScreen>
 
   ScrollController _scrollController = ScrollController();
 
- 
-
   BuildContext scaffoldContext;
 
   @override
@@ -103,7 +101,8 @@ class _FeedScreenState extends State<FeedScreen>
     TimelineNotifer timelinePosts = Provider.of<TimelineNotifer>(context);
     SearchNotifier searchNotifier =
         Provider.of<SearchNotifier>(context, listen: false);
-
+    ProfileNotifier profile =
+        Provider.of<ProfileNotifier>(context, listen: false);
     final db = Provider.of<Database>(context, listen: false);
     var format = DateFormat('dd MMM yy | h:mm a');
     // var _widgetIndex = 0;
@@ -135,7 +134,7 @@ class _FeedScreenState extends State<FeedScreen>
         ],
         backgroundColor: Colors.black,
       ),
-      drawer: AppDrawer(db.displayName),
+      drawer: AppDrawer(profile.currentFaculty.displayName),
       body: Builder(
         builder: (BuildContext context) {
           scaffoldContext = context;

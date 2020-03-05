@@ -74,7 +74,7 @@ class _NotificationScreenState extends State<NotificationScreen>
   Widget build(BuildContext context) {
     // NotificationNotifier notificationNotifier =
     // Provider.of<NotificationNotifier>(context);
-    final db = Provider.of<Database>(context);
+    final db = Provider.of<Database>(context,listen: false);
     var format = DateFormat('dd MMM yy | h:mm a');
     super.build(context);
     return Scaffold(
@@ -145,6 +145,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                               itemBuilder: (context, index) {
                                 return buildNotify(
                                   context,
+                                  uid: notifications[index].uid,
                                   facultyName: notifications[index].facultyName,
                                   imageUrl: notifications[index].imageUrl,
                                   content: notifications[index].content,
@@ -225,7 +226,9 @@ class _NotificationScreenState extends State<NotificationScreen>
       String content,
       String imageUrl,
       String createAt,
-      Function onDelete}) {
+      Function onDelete,
+      String uid}) {
+    final db = Provider.of<Database>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -246,13 +249,17 @@ class _NotificationScreenState extends State<NotificationScreen>
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                IconButton(
-                    splashColor: Colors.indigoAccent,
-                    icon: Icon(
-                      Icons.delete_forever,
-                      color: Colors.white,
-                    ),
-                    onPressed: onDelete)
+                uid == db.userId
+                    ? IconButton(
+                        splashColor: Colors.indigoAccent,
+                        icon: Icon(
+                          Icons.delete_forever,
+                          color: Colors.white,
+                        ),
+                        onPressed: onDelete)
+                    : Container(
+                        height: 0,
+                      )
               ],
             ),
             Container(

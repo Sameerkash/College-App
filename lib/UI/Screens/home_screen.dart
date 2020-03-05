@@ -35,25 +35,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    super.initState();
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         // print("onMessage: $message");
         _setMessage(message);
+        Scaffold.of(_scaffoldContext).showSnackBar(snackBar);
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
         _setMessage(message);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => NotificationScreen()));
       },
       onResume: (Map<String, dynamic> message) async {
         // print("onResume: $message");
 
         _setMessage(message);
+        //   Navigator.push(context,
+        //       MaterialPageRoute(builder: (context) =>
       },
     );
     _saveDeviceToken(context);
-    super.initState();
+
     pageController = PageController();
   }
 
@@ -86,31 +88,49 @@ class _HomeScreenState extends State<HomeScreen> {
     pageController.jumpToPage(pageIndex);
   }
 
+  BuildContext _scaffoldContext;
+
+  final snackBar = SnackBar(
+      duration: Duration(seconds: 4),
+      content: Text(
+        "New Notification!",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.red);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-          // IndexedStack(
-          //   index: pageIndex,
-          //   children: <Widget>[
-          //     FeedScreen(),
-          //     NotificationScreen(),
-          //     ResourceScreen(),
-          //     ProfileScreen(),
-          //   ],
-          // ),
-          PageView(
-        controller: pageController,
-        physics: NeverScrollableScrollPhysics(),
-        onPageChanged: onPageChanged,
-        children: <Widget>[
-          FeedScreen(),
-          NotificationScreen(),
-          DiscoverKssemScreen(),
-          // ProfileForm(),
-          // ResourceScreen(),
-          ProfileScreen(),
-        ],
+      body: Builder(
+        builder: (BuildContext context) {
+          _scaffoldContext = context;
+          return
+
+              // IndexedStack(
+              //   index: pageIndex,
+              //   children: <Widget>[
+              //     FeedScreen(),
+              //     NotificationScreen(),
+              //     ResourceScreen(),
+              //     ProfileScreen(),
+              //   ],
+              // ),
+              PageView(
+            controller: pageController,
+            physics: NeverScrollableScrollPhysics(),
+            onPageChanged: onPageChanged,
+            children: <Widget>[
+              FeedScreen(),
+              NotificationScreen(),
+              DiscoverKssemScreen(),
+              // ProfileForm(),
+              // ResourceScreen(),
+              ProfileScreen(),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
