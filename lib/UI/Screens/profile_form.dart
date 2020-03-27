@@ -58,6 +58,7 @@ class _ProfileFormState extends State<ProfileForm> {
     "Mangement Official",
     "Non-Teaching Faculty",
     "Principal",
+    "Professor"   
   ];
 
   @override
@@ -320,7 +321,7 @@ class _ProfileFormState extends State<ProfileForm> {
   }
 
   _submitFuture() {
-    // await 
+    // await
     _submit(this.context);
     Timer(Duration(milliseconds: 500), () {
       Navigator.pushReplacementNamed(context, 'check-user');
