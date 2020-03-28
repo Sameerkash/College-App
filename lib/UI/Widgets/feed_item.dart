@@ -241,6 +241,7 @@ Container buildFooter(
       ),
     ),
     child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(
@@ -261,9 +262,7 @@ Container buildFooter(
             ),
           ),
         ),
-        SizedBox(
-          width: SizeConfig.blockSizeHorizontal * 2,
-        ),
+
         Text(
           likeCount.toString(),
           // "1000",
@@ -282,9 +281,9 @@ Container buildFooter(
         //     ),
         //   ),
         // ),
-        SizedBox(width: SizeConfig.screenWidth * .19),
+        SizedBox(width: SizeConfig.screenWidth * .25),
         Padding(
-          padding: EdgeInsets.all(7),
+          padding: EdgeInsets.only(right: 10),
           child: Text(timestamp
 
               // " 1 May 2019, 1:45 pm",

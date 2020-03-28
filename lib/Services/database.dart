@@ -94,6 +94,7 @@ class FirestoreDatabase implements Database {
   bool gettingPostsList = false;
 
   getPosts(ProfileNotifier posts) async {
+    hasMorePosts = true;
     final ref = Firestore.instance;
     final snapshot = await ref
         .collection('posts/$uid/userPosts')
@@ -278,6 +279,7 @@ class FirestoreDatabase implements Database {
   bool gettingList = false;
 
   getTimeline(TimelineNotifer timelinePosts) async {
+    hasMore = true;
     final ref = Firestore.instance;
     final snapshot = await ref
         .collection('timeline')
