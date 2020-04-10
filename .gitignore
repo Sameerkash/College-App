@@ -31,6 +31,7 @@
 /build/
 /android/key.properties
 google-services.json
+package-lock.json
 
 # Web related
 lib/generated_plugin_registrant.dart
