@@ -12,4 +12,14 @@ The app contains
 * App Drawer with payment options for events 
 
 
-<img src="/screenshots/Screenshot_20200410-173500.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173528.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173545.jpg" width="30%"></img> <img src="/screenshpts/Screenshot_20200410-173600.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173609.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173616.jpg" width="30%"></img> 
+<img src="/screenshots/Screenshot_20200410-173500.jpg" width="30%"></img>
+
+<img src="/screenshots/Screenshot_20200410-173528.jpg" width="30%"></img> 
+
+<img src="/screenshots/Screenshot_20200410-173545.jpg" width="30%"></img>
+
+<img src="/screenshpts/Screenshot_20200410-173600.jpg" width="30%"></img>
+
+<img src="/screenshots/Screenshot_20200410-173609.jpg" width="30%"></img> 
+
+<img src="/screenshots/Screenshot_20200410-173616.jpg" width="30%"></img> 
