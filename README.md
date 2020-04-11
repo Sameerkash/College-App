@@ -1,16 +1,14 @@
-# kssem
+# KSSEM FACULTY 
 
-A new Flutter project.
+Offical App of KSSEM for faculty 
 
-## Getting Started
+There are two apps mainly, one for faculty and another for students both connected to the same firebase project but different UI elements.
 
-This project is a starting point for a Flutter application.
+The app contains
+* News Feed
+* Notifiactions with push notifications
+* Discover Screen
+* Profile Screen
+* App Drawer with payment options for events 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="/screenshots/Screenshot_20200410-173500.jpg" width="15%"></img> <img src="/screenshots/Screenshot_20200410-173528.jpg" width="15%"></img> <img src="/screenshots/Screenshot_20200410-173545.jpg" width="15%"></img> <img src="/screenshpts/Screenshot_20200410-173600.jpg" width="15%"></img> <img src="/screenshots/Screenshot_20200410-173609.jpg" width="15%"></img> <img src="/screenshots/Screenshot_20200410-173616.jpg" width="15%"></img> 
