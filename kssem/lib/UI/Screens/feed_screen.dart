@@ -223,7 +223,9 @@ class _FeedScreenState extends State<FeedScreen>
         transitionDuration: const Duration(milliseconds: 400),
         closedBuilder: (context, action) {
           return FloatingActionButton(
+            heroTag: 'feed',
             child: Icon(
+
               Octicons.pencil,
               color: Colors.white,
             ),

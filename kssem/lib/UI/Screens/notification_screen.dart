@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kssem/Models/notificaion.dart';
 import 'package:kssem/Notifiers/profile_notifier.dart';
+import 'package:kssem/UI/Screens/image_preview_screen.dart';
 import 'package:kssem/UI/Widgets/progress_bars.dart';
+import 'package:kssem/Utilities/size_config.dart';
 import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -218,13 +220,41 @@ class _NotificationScreenState extends State<NotificationScreen>
                 ? Container(
                     height: 0,
                   )
-                : Container(
-                    color: Colors.grey[200],
-                    height: 500,
-                    width: 400,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.contain,
+                : Hero(
+                    // key: UniqueKey(),
+                    tag: "flutterLogo",
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ImagePreview(imageUrl: imageUrl)));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxHeight: SizeConfig.blockSizeVertical * 25,
+                              maxWidth: SizeConfig.screenWidth),
+                          child: Container(
+                            // color: Colors.grey[200],
+                            foregroundDecoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                // border: Border(: BorderSide(color: Colors.black)),
+                                image: DecorationImage(
+                                    image: NetworkImage(imageUrl),
+                                    fit: BoxFit.cover)),
+                            // child: Image.network(
+                            //   imageUrl,
+                            //   fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
             Container(

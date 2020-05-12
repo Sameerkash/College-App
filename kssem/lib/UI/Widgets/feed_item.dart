@@ -3,6 +3,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 // import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:kssem/Utilities/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../Screens/image_preview_screen.dart';
 
 enum Options {
   Edit,
@@ -34,7 +35,11 @@ buildFeedCard(BuildContext context,
       children: <Widget>[
         buildHeader(devicesize,
             name: name, photoUrl: photoUrl, context: context),
-        buildContent(content: content, title: title, imageUrl: imageUrl),
+        buildContent(
+            content: content,
+            title: title,
+            imageUrl: imageUrl,
+            context: context),
         buildFooter(devicesize,
             timestamp: timestamp,
             onLiked: onLiked,
@@ -46,7 +51,8 @@ buildFeedCard(BuildContext context,
   );
 }
 
-Flexible buildContent({String content, String title, String imageUrl}) {
+Flexible buildContent(
+    {BuildContext context, String content, String title, String imageUrl}) {
   return Flexible(
     fit: FlexFit.loose,
     child: Container(
@@ -75,15 +81,44 @@ Flexible buildContent({String content, String title, String imageUrl}) {
               ? Container(
                   height: 0,
                 )
-              : Container(
-                  color: Colors.grey[200],
-                  height: SizeConfig.blockSizeVertical * 50,
-                  width: 400,
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.contain,
+              : Hero(
+                // key: UniqueKey(),
+                  tag: "flutterLogo",
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ImagePreview(imageUrl: imageUrl)));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight: SizeConfig.blockSizeVertical * 25,
+                            maxWidth: SizeConfig.screenWidth),
+                        child: Container(
+                          // color: Colors.grey[200],
+                          foregroundDecoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              // border: Border(: BorderSide(color: Colors.black)),
+                              image: DecorationImage(
+                                  image: NetworkImage(imageUrl),
+                                  fit: BoxFit.cover)),
+                          // child: Image.network(
+                          //   imageUrl,
+                          //   fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
+          // ),
           SizedBox(
             height: 5,
           ),

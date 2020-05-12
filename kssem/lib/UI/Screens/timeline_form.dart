@@ -140,6 +140,7 @@ class _TimelineFormState extends State<TimelineForm>
       floatingActionButton: _isLoading
           ? Container()
           : FloatingActionButton(
+            heroTag: 'timeline',
               splashColor: Colors.indigo,
               child: Icon(
                 Octicons.check,
