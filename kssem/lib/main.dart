@@ -12,7 +12,7 @@ import 'package:kssem/UI/Screens/home_screen.dart';
 import 'package:kssem/UI/Screens/profile_form.dart';
 import 'package:kssem/Utilities/size_config.dart';
 import 'package:provider/provider.dart';
-
+import './Utilities/theme_config.dart';
 import 'UI/Screens/landind_page.dart';
 
 void main() {
@@ -25,16 +25,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
-      // Provider<AuthBase>(
-      //   create: (context) => Auth(),
-      // ),
-      // Provider<LandingPage>(
-      //   create: (context) => LandingPage(),
-      // ),
       ChangeNotifierProvider<UserProvider>(
         create: (_) => UserProvider.initialize(),
       ),
-      // Provider<Database>(create: (_) => FirestoreDatabase()),
       ProxyProvider<UserProvider, Database>(
         update: (_, auth, __) =>
             FirestoreDatabase(uid: auth.uid, user: auth.user),
@@ -47,12 +40,12 @@ class MyApp extends StatelessWidget {
       ),
       ChangeNotifierProvider<SearchNotifier>(
         create: (context) => SearchNotifier(),
+      ),
+      ChangeNotifierProvider<ThemeChanger>(
+        create: (_) => ThemeChanger(
+            //  AppTheme.lightTheme,
+            ),
       )
-      // ChangeNotifierProvider<ThemeChanger>(
-      //   create: (_) => ThemeChanger(
-      //     ThemeData.dark(),
-      //   ),
-      // )
     ], child: MatApp());
   }
 }
@@ -60,8 +53,11 @@ class MyApp extends StatelessWidget {
 class MatApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
     return MaterialApp(
-        // theme: Provider.of<ThemeChanger>(context).getTheme(),
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: theme.isDarkModeOn ? ThemeMode.dark : ThemeMode.light,
         home: Scaffold(
           body: ScreenController(),
         ),

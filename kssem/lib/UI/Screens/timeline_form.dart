@@ -45,7 +45,7 @@ class _TimelineFormState extends State<TimelineForm>
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).appBarTheme.color,
       ),
       backgroundColor: Colors.grey[250],
       body: _isLoading
@@ -145,7 +145,7 @@ class _TimelineFormState extends State<TimelineForm>
                 Octicons.check,
                 color: Colors.white,
               ),
-              backgroundColor: Colors.black,
+              backgroundColor: Theme.of(context).iconTheme.color,
               hoverColor: Colors.purple,
               onPressed: () {
                 _submit(context);

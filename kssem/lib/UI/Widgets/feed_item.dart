@@ -23,6 +23,7 @@ buildFeedCard(BuildContext context,
 
   return Card(
     elevation: 2,
+    color: Theme.of(context).colorScheme.background,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(15.0),
     ),
@@ -120,7 +121,7 @@ Container buildHeader(MediaQueryData devicesize,
         border: Border(
             bottom: BorderSide(
           width: .50,
-          color: Colors.black26,
+          color: Theme.of(context).colorScheme.primary,
         ))),
     child: Row(
       children: <Widget>[
@@ -239,9 +240,10 @@ Container buildFooter(
         Padding(
           padding: EdgeInsets.only(
             left: SizeConfig.blockSizeHorizontal * 1,
+            bottom: SizeConfig.blockSizeHorizontal * 1.25,
           ),
           child: Material(
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(30),
             borderOnForeground: true,
             child: IconButton(
               iconSize: SizeConfig.blockSizeHorizontal * 6,
@@ -259,7 +261,7 @@ Container buildFooter(
         Text(
           likeCount.toString(),
           // "1000",
-          style: TextStyle(color: Colors.black87),
+          // style: TextStyle(color: Colors.black87),
         ),
         // Padding(
         //   padding: EdgeInsets.only(top: 15, bottom: 15, left: 15),
@@ -348,10 +350,10 @@ buildProfileFeedCard(BuildContext context,
 
   return Card(
     elevation: 2,
+    color: Theme.of(context).colorScheme.background,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(15.0),
     ),
-   
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

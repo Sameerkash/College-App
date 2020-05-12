@@ -47,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-   
     super.initState();
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -122,7 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
               FeedScreen(),
               NotificationScreen(),
               DiscoverKssemScreen(),
-              
               ProfileScreen(),
             ],
           );
@@ -143,9 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(Entypo.folder, size: 27, color: Colors.white),
             Icon(Icons.perm_identity, size: 27, color: Colors.white),
           ],
-          color: Colors.black,
-          buttonBackgroundColor: Colors.black,
-          backgroundColor: Colors.white,
+          color: Theme.of(context).colorScheme.primary,
+          buttonBackgroundColor: Theme.of(context).iconTheme.color,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           animationCurve: Curves.easeInOut,
           animationDuration: Duration(milliseconds: 600),
           onTap: onTap),

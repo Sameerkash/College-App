@@ -52,7 +52,7 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).appBarTheme.color,
         // actions: <Widget>[
         //   IconButton(
         //       icon: Icon(MaterialCommunityIcons.image), onPressed: () {}),
@@ -62,7 +62,7 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
         //   ),
         // ],
       ),
-      backgroundColor: Colors.grey[250],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Center(
               child: Container(
@@ -146,7 +146,7 @@ class _EditTimelineFormState extends State<EditTimelineForm> {
                 MaterialCommunityIcons.content_save,
                 color: Colors.white,
               ),
-              backgroundColor: Colors.black,
+              backgroundColor: Theme.of(context).iconTheme.color,
               hoverColor: Colors.purple,
               onPressed: () {
                 _submit(context);

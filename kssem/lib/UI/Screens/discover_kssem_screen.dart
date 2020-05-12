@@ -32,7 +32,7 @@ class _DiscoverKssemScreenState extends State<DiscoverKssemScreen> {
     return Scaffold(
         // backgroundColor: Colors.black,
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Theme.of(context).appBarTheme.color,
           title: Text(
             "Discover KSSEM",
             style: TextStyle(color: Colors.white),

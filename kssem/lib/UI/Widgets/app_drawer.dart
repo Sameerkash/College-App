@@ -4,8 +4,8 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:kssem/UI/Screens/coc.dart';
 import 'package:kssem/Utilities/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import '../../Notifiers/theme_changer.dart';
-// import 'package:provider/provider.dart';
+import '../../Notifiers/theme_changer.dart';
+import 'package:provider/provider.dart';
 // import 'package:kssem/Services/authentication.dart';
 // import 'package:kssem/UI/Widgets/platform_alert_dialog.dart';
 // import 'package:provider/provider.dart';
@@ -15,7 +15,7 @@ class AppDrawer extends StatelessWidget {
   final String displayName;
   @override
   Widget build(BuildContext context) {
-    // final theme = Provider.of<ThemeChanger>(context, listen: false);
+    final theme = Provider.of<ThemeChanger>(context, listen: false);
     return Drawer(
       child: Scaffold(
         body: Container(
@@ -69,26 +69,9 @@ class AppDrawer extends StatelessWidget {
                 subtitle: "code of conduct",
                 icon: MaterialCommunityIcons.flag,
               ),
-              // SizedBox(
-              //   height: 5,
-              // ),
-              // buildListTile(
-              //     title: "Discover KSSEM",
-              //     subtitle: "Coming Soon",
-              //     icon: Octicons.globe),
-              // SizedBox(
-              //   height: SizeConfig.blockSizeVertical *4,
-              // ),
-              // IconButton(
-              //   icon: Icon(Icons.lightbulb_outline),
-              //   onPressed: () {
-              //     if (theme.getTheme() == ThemeData.dark()) {
-              //       theme.setTheme(ThemeData.light());
-              //     } else {
-              //       theme.setTheme(ThemeData.dark());
-              //     }
-              //   },
-              // ),
+              SizedBox(
+                height: 5,
+              ),
               buildListTile(
                   onTap: () async {
                     String subject = "KSSEM App Bug Report";
@@ -100,6 +83,7 @@ class AppDrawer extends StatelessWidget {
                       print('Could not launch $uri');
                     }
                   },
+
                   //   SchedulerBinding.instance.addPostFrameCallback((_) {
                   //     // close the app drawer
                   //     Navigator.of(context).pop();
@@ -112,7 +96,23 @@ class AppDrawer extends StatelessWidget {
 
                   title: "Feedback",
                   subtitle: "Contact the Developer",
-                  icon: Icons.mail)
+                  icon: Icons.mail),
+              // IconButton(
+              //   icon: Icon(Icons.lightbulb_outline),
+              //   onPressed: () {
+              //     if (theme.getTheme() == ThemeData.dark()) {
+              //       theme.setTheme(ThemeData.light());
+              //     } else {
+              //       theme.setTheme(ThemeData.dark());
+              //     }
+              //   },
+              // ),
+              Switch(
+                  value: Provider.of<ThemeChanger>(context).isDarkModeOn,
+                  onChanged: (booleanValue) {
+                    Provider.of<ThemeChanger>(context,listen: false)
+                        .updateTheme(booleanValue);
+                  }),
             ],
           ),
         ),

@@ -45,7 +45,7 @@ class _CheckUserExistsState extends State<CheckUserExists> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.black,
+                backgroundColor: Theme.of(context).appBarTheme.color,
               ),
               body: TimlineShimmer(),
               bottomNavigationBar: CurvedNavigationBar(
@@ -63,9 +63,9 @@ class _CheckUserExistsState extends State<CheckUserExists> {
                   Icon(Entypo.folder, size: 27, color: Colors.white),
                   Icon(Icons.perm_identity, size: 27, color: Colors.white),
                 ],
-                color: Colors.black,
-                buttonBackgroundColor: Colors.black,
-                backgroundColor: Colors.white,
+                color: Theme.of(context).colorScheme.primary,
+                buttonBackgroundColor: Theme.of(context).iconTheme.color,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 animationCurve: Curves.easeInOut,
                 animationDuration: Duration(milliseconds: 500),
                 // onTap: onTap

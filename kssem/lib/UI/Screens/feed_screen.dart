@@ -124,6 +124,7 @@ class _FeedScreenState extends State<FeedScreen>
         //   index: _widgetIndex,
         //   children: <Widget>[
         Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text("News Feed"),
         actions: <Widget>[
@@ -144,7 +145,7 @@ class _FeedScreenState extends State<FeedScreen>
             ),
           )
         ],
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).appBarTheme.color,
       ),
       drawer: profile.student == null
           ? TimlineShimmer()
@@ -208,10 +209,9 @@ class _FeedScreenState extends State<FeedScreen>
                       },
                       separatorBuilder: (BuildContext context, int index) =>
                           Divider(
-                        height: 15,
-                        thickness: 15,
-                        color: Colors.white,
-                      ),
+                              height: 15,
+                              thickness: 15,
+                              color: Theme.of(context).scaffoldBackgroundColor),
                     ),
                     // ),
                   ),
@@ -227,7 +227,7 @@ class _FeedScreenState extends State<FeedScreen>
               Octicons.pencil,
               color: Colors.white,
             ),
-            backgroundColor: Colors.black,
+            backgroundColor: Theme.of(context).iconTheme.color,
             hoverColor: Colors.purple,
             onPressed: action,
           );

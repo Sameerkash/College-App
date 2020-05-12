@@ -12,7 +12,7 @@ import 'package:kssem/Services/database.dart';
 import 'package:kssem/UI/Screens/edit_timeline_form.dart';
 import 'package:kssem/UI/Widgets/feed_item.dart';
 import 'package:kssem/UI/Widgets/platform_alert_dialog.dart';
-import 'package:kssem/UI/Widgets/progress_bars.dart';
+// import 'package:kssem/UI/Widgets/progress_bars.dart';
 import 'package:kssem/UI/Widgets/shimmer_widgets.dart';
 import 'package:kssem/Utilities/size_config.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     // Future post = db.getPosts();
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Theme.of(context).appBarTheme.color,
           title: Text("Profile"),
           actions: <Widget>[
             Icon(Icons.exit_to_app),
@@ -218,7 +218,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                           Divider(
                                     height: 15,
                                     thickness: 15,
-                                    color: Colors.white,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
                                   ),
                                   itemBuilder: (context, i) {
                                     if (posts.posts.isEmpty) {
@@ -325,14 +326,14 @@ class _ProfileScreenState extends State<ProfileScreen>
     ProfileNotifier student =
         Provider.of<ProfileNotifier>(context, listen: false);
     return Container(
-      color: Color(0xff3757575),
+      // color: Color(0xff3757575),
       child: Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Container(
           padding: EdgeInsets.only(top: 12, left: 25, right: 25, bottom: 10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -470,7 +471,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     child: Container(
                       height: 50,
                       width: 50,
-                      color: Colors.black,
+                      color: Theme.of(context).iconTheme.color,
                       child: IconButton(
                         splashColor: Colors.indigo,
                         icon: Icon(Icons.check),
@@ -542,6 +543,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       String linkedInUrl,
       String linkUrl}) {
     return Card(
+      color: Theme.of(context).colorScheme.background,
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
       child: Container(
         child: Padding(
@@ -570,7 +572,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                         minFontSize: 18,
                         maxLines: 2,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(
                         height: devicesize.height * .019,
@@ -580,7 +583,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         // snapshot.data.branch,
                         // " 1KG17CS070",
                         minFontSize: 22,
-                        style: TextStyle(color: Colors.black),
+                        // style: TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
@@ -600,7 +603,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       // "Flutter developer| Deep learning |Game development developer| Deep Learning ",
                       style: TextStyle(
                           fontSize: SizeConfig.blockSizeHorizontal * 5,
-                          color: Colors.grey[800],
+                          // color: Colors.grey[800],
                           fontWeight: FontWeight.bold),
                     ),
               SizedBox(

@@ -180,6 +180,7 @@ class _UserProfileState extends State<UserProfile> {
       String linkedInUrl,
       String linkUrl}) {
     return Card(
+      color: Theme.of(context).colorScheme.background,
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 30),
       child: Container(
         child: Padding(
@@ -207,7 +208,7 @@ class _UserProfileState extends State<UserProfile> {
                         minFontSize: 20,
                         maxLines: 2,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                            fontWeight: FontWeight.bold, ),
                       ),
                       SizedBox(
                         height: devicesize.height * .019,
@@ -218,14 +219,14 @@ class _UserProfileState extends State<UserProfile> {
                               // snapshot.data.branch,
                               // " 1KG17CS070",
                               minFontSize: 23,
-                              style: TextStyle(color: Colors.black),
+                              // style: TextStyle(color: Colors.black),
                             )
                           : AutoSizeText(
                               branch,
                               // snapshot.data.branch,
                               // " 1KG17CS070",
                               minFontSize: 23,
-                              style: TextStyle(color: Colors.black),
+                              // style: TextStyle(color: Colors.black),
                             ),
                     ],
                   ),
@@ -245,7 +246,7 @@ class _UserProfileState extends State<UserProfile> {
                       // "Flutter developer| Deep learning |Game development developer| Deep Learning ",
                       style: TextStyle(
                           fontSize: SizeConfig.blockSizeHorizontal * 5,
-                          color: Colors.grey[800],
+                          // color: Colors.grey[800],
                           fontWeight: FontWeight.bold),
                     ),
               SizedBox(

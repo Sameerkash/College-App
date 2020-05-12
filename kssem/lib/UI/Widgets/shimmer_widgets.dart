@@ -5,11 +5,14 @@ import 'package:shimmer/shimmer.dart';
 class TimlineShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300],
-      highlightColor: Colors.white,
-      child: ShimmerTimeline(),
-      // period: Duration(milliseconds:20 ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+          body: Shimmer.fromColors(
+        baseColor: Colors.grey[300],
+        highlightColor: Colors.white,
+        child: ShimmerTimeline(),
+        // period: Duration(milliseconds:20 ),
+      ),
     );
   }
 }

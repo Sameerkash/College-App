@@ -31,6 +31,7 @@ class _CodeOfConductState extends State<CodeOfConduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: PageView.builder(
         controller: ctrl,
         itemCount: 4,
@@ -58,8 +59,8 @@ class _CodeOfConductState extends State<CodeOfConduct> {
     String content,
   }) {
     // Animated Properties
-    final double blur = active ? 30 : 0;
-    final double offset = active ? 20 : 0;
+    // final double blur = active ? 30 : 0;
+    // final double offset = active ? 20 : 0;
     final double top = active ? 100 : 200;
 
     return AnimatedContainer(
@@ -73,7 +74,7 @@ class _CodeOfConductState extends State<CodeOfConduct> {
           //     image: AssetImage(slideList),
           //   ),
           boxShadow: [
-            BoxShadow(color: Colors.black87
+            BoxShadow(color: Theme.of(context).colorScheme.primaryVariant
                 // blurRadius: blur,
                 // offset: Offset(offset, offset)
                 )
@@ -99,8 +100,10 @@ class _CodeOfConductState extends State<CodeOfConduct> {
                   style:
                       GoogleFonts.openSans(fontSize: 15, color: Colors.white),
                 ),
-                
-                widget != null ? widget : Container()
+                widget != null ? widget : Container(),
+                SizedBox(
+                  height: 10,
+                )
               ],
             ),
           ),

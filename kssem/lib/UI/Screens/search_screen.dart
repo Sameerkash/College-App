@@ -25,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
     String query;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).appBarTheme.color,
         title: TextField(
           controller: _textEditingController,
           style: TextStyle(color: Colors.white),

@@ -3,13 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kssem/Models/notificaion.dart';
 import 'package:kssem/Notifiers/profile_notifier.dart';
-
-import 'package:kssem/Services/database.dart';
-// import 'package:kssem/Notifiers/notification_notifier.dart';
-
 import 'package:kssem/UI/Widgets/progress_bars.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key key}) : super(key: key);
@@ -103,7 +98,7 @@ class _NotificationScreenState extends State<NotificationScreen>
         //     ),
         //   )
         // ],
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).appBarTheme.color,
         title: const Text("Notifications"),
       ),
       body:
@@ -182,7 +177,7 @@ class _NotificationScreenState extends State<NotificationScreen>
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
-        color: Colors.red[400],
+        color: Theme.of(context).colorScheme.secondary,
         borderOnForeground: true,
         child: Container(
             child: Column(
