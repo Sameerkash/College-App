@@ -49,8 +49,11 @@ class _DiscoverKssemScreenState extends State<DiscoverKssemScreen> {
             padding: const EdgeInsets.all(2.0),
             child: Stack(children: <Widget>[
               InkWell(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Container())),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                            body: Center(child: Text("Nothing here yet"))))),
                 child: Container(
                   foregroundDecoration:
                       BoxDecoration(color: Colors.black.withOpacity(.5)),

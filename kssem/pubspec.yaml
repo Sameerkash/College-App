@@ -48,6 +48,7 @@ dependencies:
   google_fonts: ^1.0.0
   shimmer: ^1.1.1
   shared_preferences: ^0.5.7+2
+  lazy_load_refresh_indicator: ^1.0.0+1
 
   
 

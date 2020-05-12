@@ -285,7 +285,7 @@ class FirestoreDatabase implements Database {
   getMoreTimeline(TimelineNotifer timelinePosts) async {
     
     // print("get moretimeliene called");
-    // print(gettingList);
+    print(gettingList);
     if (gettingList) {
       print("if block getting list");
       return;

@@ -107,12 +107,22 @@ class AppDrawer extends StatelessWidget {
               //     }
               //   },
               // ),
-              Switch(
-                  value: Provider.of<ThemeChanger>(context).isDarkModeOn,
-                  onChanged: (booleanValue) {
-                    Provider.of<ThemeChanger>(context,listen: false)
-                        .updateTheme(booleanValue);
-                  }),
+              Row(children: [
+                Switch(
+                    value: Provider.of<ThemeChanger>(context).isDarkModeOn,
+                    onChanged: (booleanValue) {
+                      Provider.of<ThemeChanger>(context, listen: false)
+                          .updateTheme(booleanValue);
+                    }),
+                // Spacer(),
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Dark Mode",
+                  style: TextStyle(fontSize: 18),
+                )
+              ]),
             ],
           ),
         ),

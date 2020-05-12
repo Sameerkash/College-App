@@ -31,6 +31,7 @@ class AppTheme {
     accentColor: _accentColor,
 
     colorScheme: ColorScheme.light(
+        onSecondary: _darkbackColor,
         primary: _primaryColor,
         secondary: _secondaryVarientColor,
         background: _lightbackColor,
@@ -51,6 +52,7 @@ class AppTheme {
     scaffoldBackgroundColor: _darkScaffold,
     accentColor: _accentColor,
     colorScheme: ColorScheme.dark(
+        onSecondary: _lightbackColor,
         onBackground: _secondaryBackgroundColor,
         background: _darkbackColor,
         primary: _primaryColor,

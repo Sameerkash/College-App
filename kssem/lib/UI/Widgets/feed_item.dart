@@ -81,31 +81,33 @@ Flexible buildContent(
               ? Container(
                   height: 0,
                 )
-              : Hero(
-                // key: UniqueKey(),
-                  tag: "flutterLogo",
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ImagePreview(imageUrl: imageUrl)));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxHeight: SizeConfig.blockSizeVertical * 25,
-                            maxWidth: SizeConfig.screenWidth),
+              :
+              // child:
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ImagePreview(imageUrl: imageUrl)));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxHeight: SizeConfig.blockSizeVertical * 25,
+                          maxWidth: SizeConfig.screenWidth),
+                      child: Hero(
+                        // key: UniqueKey(),
+                        tag: "flutterLogo",
                         child: Container(
                           // color: Colors.grey[200],
                           foregroundDecoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(40),
+                            borderRadius: BorderRadius.circular(25),
                           ),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
+                              borderRadius: BorderRadius.circular(25),
                               // border: Border(: BorderSide(color: Colors.black)),
                               image: DecorationImage(
                                   image: NetworkImage(imageUrl),
@@ -277,19 +279,21 @@ Container buildFooter(
             left: SizeConfig.blockSizeHorizontal * 1,
             bottom: SizeConfig.blockSizeHorizontal * 1.25,
           ),
-          child: Material(
-            borderRadius: BorderRadius.circular(30),
-            borderOnForeground: true,
-            child: IconButton(
-              iconSize: SizeConfig.blockSizeHorizontal * 6,
-              enableFeedback: true,
-              splashColor: Colors.red,
-              onPressed: onLiked,
-              icon: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                color: isLiked ? Colors.red : Colors.black,
-              ),
+          // child: Material(
+          //   borderRadius: BorderRadius.circular(30),
+          //   borderOnForeground: true,
+          child: IconButton(
+            iconSize: SizeConfig.blockSizeHorizontal * 6,
+            enableFeedback: true,
+
+            splashColor: Colors.red,
+            onPressed: onLiked,
+            icon: Icon(
+              isLiked ? Icons.favorite : Icons.favorite_border,
+              color: isLiked ? Colors.red : Colors.grey,
+              size: 30,
             ),
+            // ),
           ),
         ),
 
