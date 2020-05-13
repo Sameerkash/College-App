@@ -104,7 +104,7 @@ class _TimelineFormState extends State<TimelineForm>
                             ),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Content canot be empty";
+                                return "Content cannot be empty";
                               } else if (value.contains("fuck") ||
                                   value.contains("sex") ||
                                   value.contains("porn") ||
