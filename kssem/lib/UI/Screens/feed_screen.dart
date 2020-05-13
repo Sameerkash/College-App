@@ -6,16 +6,16 @@ import 'package:kssem/Notifiers/profile_notifier.dart';
 import 'package:kssem/Notifiers/search_notifier.dart';
 import 'package:kssem/Notifiers/timeline_notifier.dart';
 import 'package:kssem/Services/database.dart';
-import 'package:kssem/UI/Screens/discover_screens/departments.dart';
-import 'package:kssem/UI/Screens/home_screen.dart';
+// import 'package:kssem/UI/Screens/discover_screens/departments.dart';
+// import 'package:kssem/UI/Screens/home_screen.dart';
 import 'package:kssem/UI/Screens/search_screen.dart';
 import 'package:kssem/UI/Screens/timeline_form.dart';
 import 'package:kssem/UI/Widgets/app_drawer.dart';
 import 'package:kssem/UI/Widgets/feed_item.dart';
-import 'package:kssem/UI/Widgets/progress_bars.dart';
+// import 'package:kssem/UI/Widgets/progress_bars.dart';
 import 'package:kssem/UI/Widgets/shimmer_widgets.dart';
 import 'package:lazy_load_refresh_indicator/lazy_load_refresh_indicator.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+// import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
 // import 'package:flutter/animation.dart';
 import 'package:animations/animations.dart';
@@ -94,17 +94,17 @@ class _FeedScreenState extends State<FeedScreen>
     // });
   }
 
-  bool lazyload = false;
-  lazyloadposts(TimelineNotifer timelinePosts, BuildContext context) async {
-    final db = Provider.of<Database>(context, listen: false);
-    setState(() {
-      lazyload = true;
-    });
-    await db.getMoreTimeline(timelinePosts);
-    setState(() {
-      lazyload = false;
-    });
-  }
+  // bool lazyload = false;
+  // lazyloadposts(TimelineNotifer timelinePosts, BuildContext context) async {
+  //   final db = Provider.of<Database>(context, listen: false);
+  //   setState(() {
+  //     lazyload = true;
+  //   });
+  //   await db.getMoreTimeline(timelinePosts);
+  //   setState(() {
+  //     lazyload = false;
+  //   });
+  // }
 
   bool isLoading = false;
 
@@ -170,9 +170,9 @@ class _FeedScreenState extends State<FeedScreen>
               //         // db.getTimelineFixPosts(timelinePosts);
               //       },
               LazyLoadRefreshIndicator(
-                isLoading: lazyload,
-                  onEndOfPage: () => lazyloadposts(timelinePosts, context),
-                  //  db.getMoreTimeline(timelinePosts),
+                // isLoading: lazyload,
+                  onEndOfPage: () => 
+                   db.getMoreTimeline(timelinePosts),
                   onRefresh: ()=> db.getTimeline(timelinePosts),
                   child: ListView.separated(
                     physics: AlwaysScrollableScrollPhysics(),

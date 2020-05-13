@@ -177,9 +177,9 @@ class _NotificationScreenState extends State<NotificationScreen>
       String createAt,
       Function onDelete}) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(2.0),
       child: Card(
-        color: Theme.of(context).colorScheme.secondary,
+        color: Theme.of(context).iconTheme.color,
         borderOnForeground: true,
         child: Container(
             child: Column(
@@ -221,8 +221,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                     height: 0,
                   )
                 : Hero(
-                    // key: UniqueKey(),
-                    tag: "flutterLogo",
+                    tag: "$imageUrl",
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -235,15 +234,18 @@ class _NotificationScreenState extends State<NotificationScreen>
                         padding: const EdgeInsets.only(right: 8.0, left: 8.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                              maxHeight: SizeConfig.blockSizeVertical * 25,
+                              maxHeight: SizeConfig.blockSizeVertical * 20,
                               maxWidth: SizeConfig.screenWidth),
-                          child: Container(
+                          child:
+                              // Stack(children: [
+                              Container(
                             // color: Colors.grey[200],
                             foregroundDecoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(40),
                             ),
                             decoration: BoxDecoration(
+                                boxShadow: [BoxShadow(color: Colors.white)],
                                 borderRadius: BorderRadius.circular(40),
                                 // border: Border(: BorderSide(color: Colors.black)),
                                 image: DecorationImage(
@@ -253,6 +255,12 @@ class _NotificationScreenState extends State<NotificationScreen>
                             //   imageUrl,
                             //   fit: BoxFit.cover,
                           ),
+                          //   Align(
+                          //     alignment: Alignment.bottomCenter,
+                          //     child:
+                          //         Material(child: Text("Tap to Preview Image",style: TextStyle(fontSize: 8),)),
+                          //   ),
+                          // ]),
                         ),
                       ),
                     ),
@@ -262,7 +270,9 @@ class _NotificationScreenState extends State<NotificationScreen>
               child: Text(
                 // "23-1-2020",
                 createAt,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: SizeConfig.textMultiplier * 1.3),
               ),
             )
           ],

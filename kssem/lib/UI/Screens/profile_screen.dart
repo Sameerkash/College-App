@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -15,7 +16,8 @@ import 'package:kssem/UI/Widgets/platform_alert_dialog.dart';
 // import 'package:kssem/UI/Widgets/progress_bars.dart';
 import 'package:kssem/UI/Widgets/shimmer_widgets.dart';
 import 'package:kssem/Utilities/size_config.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+// import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';.
+import 'package:lazy_load_refresh_indicator/lazy_load_refresh_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -171,140 +173,182 @@ class _ProfileScreenState extends State<ProfileScreen>
             scaffoldContext = context;
             return posts.student == null
                 ? ShimmerProfile()
-                : LazyLoadScrollView(
-                    onEndOfPage: () {
-                      db.getMoreProfilePosts(posts);
+                // : LazyLoadScrollView(
+                //     onEndOfPage: () {
+                //       db.getMoreProfilePosts(posts);
+                //     },
+                //     child: RefreshIndicator(
+                //       color: Colors.indigo,
+                //       onRefresh: () {
+                //         return db.getStudentProfile(posts);
+                //       },
+                //       child: RefreshIndicator(
+                //         color: Colors.purple,
+                //         onRefresh: () {
+                //           return db.getPosts(posts);
+                //           // db.getStudentProfile(posts);
+                //         },
+                : LazyLoadRefreshIndicator(
+                    // isLoading: lazyload,
+                    onRefresh: () {
+                      db.getPosts(posts);
+                      return db.getStudentProfile(posts);
                     },
-                    child: RefreshIndicator(
-                      color: Colors.indigo,
-                      onRefresh: () {
-                        return db.getStudentProfile(posts);
-                      },
-                      child: RefreshIndicator(
-                        color: Colors.purple,
-                        onRefresh: () {
-                          return db.getPosts(posts);
-                          // db.getStudentProfile(posts);
-                        },
-                        child: SingleChildScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          // controller: _scrollController,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              buildCard(devicesize,
-                                  description: posts.student.links.description,
-                                  githubUrl: posts.student.links.github,
-                                  linkedInUrl: posts.student.links.linkedIn,
-                                  linkUrl: posts.student.links.link,
-                                  photoUrl: posts.student.photoUrl,
-                                  name: posts.student.displayName ?? "name",
-                                  branch: posts.student.branch, onEdit: () {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: buildBottomsheet,
-                                );
-                              }),
-                              Flexible(
-                                // fit: FlexFit.loose,
-
-                                child: ListView.separated(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  separatorBuilder:
-                                      (BuildContext context, int index) =>
-                                          Divider(
-                                    height: 15,
-                                    thickness: 15,
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
+                    onEndOfPage: () => db.getMoreProfilePosts(posts),
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      // controller: _scrollController,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          buildCard(devicesize,
+                              description: posts.student.links.description,
+                              githubUrl: posts.student.links.github,
+                              linkedInUrl: posts.student.links.linkedIn,
+                              linkUrl: posts.student.links.link,
+                              photoUrl: posts.student.photoUrl,
+                              name: posts.student.displayName ?? "name",
+                              branch: posts.student.branch, onEdit: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: buildBottomsheet,
+                            );
+                          }),
+                          (posts.posts.isEmpty)
+                              ? Container(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        "There's not much to show here",
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.blockSizeVertical *
+                                                    2.5),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            SizeConfig.blockSizeVertical * 3,
+                                      ),
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                            maxWidth:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    70),
+                                        child: Image.asset('assets/cat.gif',
+                                            fit: BoxFit.contain),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            SizeConfig.blockSizeVertical * 8,
+                                      ),
+                                      Text(
+                                        "Try writing your first post!",
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.blockSizeVertical *
+                                                    2),
+                                      ),
+                                    ],
                                   ),
-                                  itemBuilder: (context, i) {
-                                    if (posts.posts.isEmpty) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.contain,
-                                            alignment: Alignment.center,
-                                            image: AssetImage('assets/cat.gif'),
-                                          ),
-                                        ),
-                                      );
-                                    }
+                                  // decoration: BoxDecoration(
+                                  // image: DecorationImage(
+                                  //   fit: BoxFit.contain,
+                                  //   alignment: Alignment.center,
+                                  //   image: AssetImage('assets/cat.gif'),
+                                  // ),
+                                  // ),
+                                )
+                              : Flexible(
+                                  // fit: FlexFit.loose,
 
-                                    // if (posts.posts.isEmpty) {
-                                    //   return ProfileShimmer();
-                                    // }
-                                    bool isLiked =
-                                        posts.posts[i].likes[db.userId] == true;
+                                  child: ListView.separated(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    separatorBuilder:
+                                        (BuildContext context, int index) =>
+                                            Divider(
+                                      height: 15,
+                                      thickness: 15,
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                    ),
+                                    itemBuilder: (context, i) {
+                                      // if (posts.posts.isEmpty) {
+                                      //   return ProfileShimmer();
+                                      // }
+                                      bool isLiked =
+                                          posts.posts[i].likes[db.userId] ==
+                                              true;
 
-                                    return buildProfileFeedCard(context,
-                                        onLiked: () {
-                                          handleLikePost(posts.posts[i]);
-                                        },
-                                        isLiked: isLiked,
-                                        likeCount: getLikeCount(posts.posts[i]),
-                                        onPressedEdit: () {
-                                          posts.currentProfilePost =
-                                              posts.posts[i];
-                                          // print(posts.currentPost.title);
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditTimelineForm(
-                                                isUpdating: true,
-                                                scaffoldContext:
-                                                    scaffoldContext,
+                                      return buildProfileFeedCard(context,
+                                          onLiked: () {
+                                            handleLikePost(posts.posts[i]);
+                                          },
+                                          isLiked: isLiked,
+                                          likeCount:
+                                              getLikeCount(posts.posts[i]),
+                                          onPressedEdit: () {
+                                            posts.currentProfilePost =
+                                                posts.posts[i];
+                                            // print(posts.currentPost.title);
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditTimelineForm(
+                                                  isUpdating: true,
+                                                  scaffoldContext:
+                                                      scaffoldContext,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                        onPressedDelete: () async {
-                                          final didRequestSignOut =
-                                              await PlatformAlertDialog(
-                                            title:
-                                                'Are you sure you want to delete this?',
-                                            content:
-                                                'This action cannot be undone',
-                                            cancelActionText: 'Cancel',
-                                            defaultActionText: 'Delete',
-                                          ).show(context);
-                                          if (didRequestSignOut == true) {
-                                            db.deletePost(
-                                              posts.posts[i],
                                             );
-                                            _deletePost(posts.posts[i]);
-                                          }
-                                        },
-                                        photoUrl: posts.posts[i].photoUrl,
-                                        name: posts.posts[i].userName,
-                                        timestamp: posts.posts[i].updatedAt ==
-                                                null
-                                            ? format
-                                                .format(posts.posts[i].createdAt
-                                                    .toDate())
-                                                .toString()
-                                            : '✏️ ' +
-                                                format
-                                                    .format(posts
-                                                        .posts[i].updatedAt
-                                                        .toDate())
-                                                    .toString(),
-                                        content: posts.posts[i].content,
-                                        title: posts.posts[i].title);
-                                  },
-                                  itemCount: posts.posts.length == 0
-                                      ? 1
-                                      : posts.posts.length,
+                                          },
+                                          onPressedDelete: () async {
+                                            final didRequestSignOut =
+                                                await PlatformAlertDialog(
+                                              title:
+                                                  'Are you sure you want to delete this?',
+                                              content:
+                                                  'This action cannot be undone',
+                                              cancelActionText: 'Cancel',
+                                              defaultActionText: 'Delete',
+                                            ).show(context);
+                                            if (didRequestSignOut == true) {
+                                              db.deletePost(
+                                                posts.posts[i],
+                                              );
+                                              _deletePost(posts.posts[i]);
+                                            }
+                                          },
+                                          photoUrl: posts.posts[i].photoUrl,
+                                          name: posts.posts[i].userName,
+                                          timestamp:
+                                              posts.posts[i].updatedAt == null
+                                                  ? format
+                                                      .format(posts
+                                                          .posts[i].createdAt
+                                                          .toDate())
+                                                      .toString()
+                                                  : '✏️ ' +
+                                                      format
+                                                          .format(posts.posts[i]
+                                                              .updatedAt
+                                                              .toDate())
+                                                          .toString(),
+                                          content: posts.posts[i].content,
+                                          title: posts.posts[i].title);
+                                    },
+                                    itemCount: posts.posts.length == 0
+                                        ? 1
+                                        : posts.posts.length,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ],
                       ),
                     ),
+                    // ),
+                    // ),
                   );
           },
         ));
@@ -553,11 +597,15 @@ class _ProfileScreenState extends State<ProfileScreen>
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  CircleAvatar(
-                    radius: SizeConfig.blockSizeHorizontal * 12,
-                    backgroundImage: NetworkImage(photoUrl),
-                    backgroundColor: Colors.blue,
-                  ),
+                  CachedNetworkImage(
+                      imageUrl: photoUrl,
+                      imageBuilder: (_, imageprovider) {
+                        return CircleAvatar(
+                          radius: SizeConfig.blockSizeHorizontal * 12,
+                          backgroundImage: imageprovider,
+                          backgroundColor: Colors.blue,
+                        );
+                      }),
                   SizedBox(
                     width: devicesize.height * .03,
                   ),

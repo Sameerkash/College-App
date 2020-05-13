@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 // import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -83,40 +84,45 @@ Flexible buildContent(
                 )
               :
               // child:
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ImagePreview(imageUrl: imageUrl)));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxHeight: SizeConfig.blockSizeVertical * 25,
-                          maxWidth: SizeConfig.screenWidth),
-                      child: Hero(
-                        // key: UniqueKey(),
-                        tag: "flutterLogo",
-                        child: Container(
-                          // color: Colors.grey[200],
-                          foregroundDecoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              // border: Border(: BorderSide(color: Colors.black)),
-                              image: DecorationImage(
-                                  image: NetworkImage(imageUrl),
-                                  fit: BoxFit.cover)),
-                          // child: Image.network(
-                          //   imageUrl,
-                          //   fit: BoxFit.cover,
-                        ),
-                      ),
+              Hero(
+                  // key: UniqueKey(),
+                  tag: "$imageUrl",
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ImagePreview(imageUrl: imageUrl)));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                      child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          imageBuilder: (_, imageprovider) {
+                            return ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxHeight: SizeConfig.blockSizeVertical * 25,
+                                  maxWidth: SizeConfig.screenWidth),
+                              child: Container(
+                                // color: Colors.grey[200],
+                                foregroundDecoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                decoration: BoxDecoration(
+                                    boxShadow: [BoxShadow(color: Colors.white)],
+                                    borderRadius: BorderRadius.circular(25),
+                                    // border: Border(: BorderSide(color: Colors.black)),
+                                    image: DecorationImage(
+                                        image: imageprovider,
+                                        fit: BoxFit.cover)),
+                                // child: Image.network(
+                                //   imageUrl,
+                                //   fit: BoxFit.cover,
+                              ),
+                            );
+                          }),
                     ),
                   ),
                 ),
@@ -219,10 +225,15 @@ Container buildProfileHeader(MediaQueryData devicesize,
             padding: EdgeInsets.only(
               top: 10,
             ),
-            child: CircleAvatar(
-              maxRadius: 23,
-              backgroundImage: NetworkImage(photoUrl),
-              backgroundColor: Colors.blue[900],
+            child: CachedNetworkImage(
+              imageUrl: photoUrl,
+              imageBuilder: (_, imageprovider) {
+                return CircleAvatar(
+                  maxRadius: 23,
+                  backgroundImage: imageprovider,
+                  backgroundColor: Colors.blue[900],
+                );
+              },
             )),
         // SizedBox(
         //   width: SizeConfig.blockSizeHorizontal * 3,
@@ -276,7 +287,7 @@ Container buildFooter(
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(
-            left: SizeConfig.blockSizeHorizontal * 1,
+            left: SizeConfig.blockSizeHorizontal * 3,
             bottom: SizeConfig.blockSizeHorizontal * 1.25,
           ),
           // child: Material(
@@ -297,11 +308,14 @@ Container buildFooter(
           ),
         ),
 
-        Text(
-          likeCount.toString(),
-          // "1000",
-          // style: TextStyle(color: Colors.black87),
+        Expanded(
+          child: Text(
+            likeCount.toString(),
+            // "1000",
+            // style: TextStyle(color: Colors.black87),
+          ),
         ),
+        // Container(width: 20,),
         // Padding(
         //   padding: EdgeInsets.only(top: 15, bottom: 15, left: 15),
         //   child: Material(
@@ -315,13 +329,14 @@ Container buildFooter(
         //     ),
         //   ),
         // ),
-        SizedBox(width: SizeConfig.screenWidth * .25),
+        SizedBox(width: SizeConfig.screenWidth * .40),
         Padding(
           padding: EdgeInsets.only(right: 10),
-          child: Text(timestamp
-
-              // " 1 May 2019, 1:45 pm",
-              ),
+          child: Text(
+            timestamp,
+            style: TextStyle(fontSize: SizeConfig.textMultiplier * 1.3),
+            // " 1 May 2019, 1:45 pm",
+          ),
         )
       ],
     ),

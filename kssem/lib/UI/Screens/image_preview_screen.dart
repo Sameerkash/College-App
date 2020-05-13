@@ -15,7 +15,7 @@ class ImagePreview extends StatelessWidget {
             maxWidth: SizeConfig.screenWidth,
             maxHeight: SizeConfig.screenHeight),
         child: Hero(
-          tag: "flutterLogo",
+          tag: "$imageUrl",
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
