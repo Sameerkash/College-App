@@ -40,7 +40,7 @@ class _FeedScreenState extends State<FeedScreen>
         Provider.of<ProfileNotifier>(context, listen: false);
 
     db.getTimeline(timelinePosts);
-    // db.getTimelineFixPosts(timelinePosts);
+    // db.getTimelineFixPosts(timeli  nePosts);
     db.getStudentProfile(profile);
 
     super.initState();

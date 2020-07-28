@@ -313,7 +313,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   'This action cannot be undone',
                                               cancelActionText: 'Cancel',
                                               defaultActionText: 'Delete',
-                                            ).show(context);
+                                            ).show(context);  
                                             if (didRequestSignOut == true) {
                                               db.deletePost(
                                                 posts.posts[i],
