@@ -12,6 +12,6 @@ There are two apps mainly, one for faculty and another for students both connect
 - Profile Screen
 - App Drawer with payment options for events
 
-<img src="/screenshots/Screenshot_20200410-173500.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173528.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173545.jpg" width="30%"></img>
-<img src="/screenshots/home.jpeg" width="30%"></img><img src="/screenshots/Screenshot_20200410-173600.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173609.jpg" width="30%"></img> <img src="/screenshots/Screenshot_20200410-173616.jpg" width="30%"></img>
-k
+<img src="/kssemfaculty/screenshots/home.jpg" width="30%"></img> <img src="/kssemfaculty/screenshots/drawer.jpg" width="30%"></img> <img src="/kssemfaculty/screenshots/home2.jpg" width="30%"></img>
+<img src="/kssemfaculty/screenshots/notifications.jpg" width="30%"> </img><img src="/kssemfaculty/screenshots/profile-empty.jpg" width="30%"></img> <img src="/kssemfaculty/screenshots/profile.jpg" width="30%"></img> <img src="/kssemfaculty/screenshots/discover.jpg" width="30%"></img>
+
