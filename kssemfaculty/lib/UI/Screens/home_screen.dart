@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
               PageView(
             controller: pageController,
             physics: NeverScrollableScrollPhysics(),
-            onPageChanged: onPageChanged,
+            onPageChanged:  onPageChanged,
             children: <Widget>[
               FeedScreen(),
               NotificationScreen(),
