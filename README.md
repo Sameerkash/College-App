@@ -8,3 +8,4 @@
  *Features*
  
  - Students app can only post to feed and without images
+ - Faculty can post both to feed and notifications with images
